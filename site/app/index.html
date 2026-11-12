@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en" class="locked">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#efe6d8">
+<title>Karim &amp; Maya</title>
+<meta name="description" content="You are invited to the wedding of Karim &amp; Maya, Saturday 19 June 2027, Olive Grove Hall, Batroun.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Karim &amp; Maya · You're invited">
+<meta property="og:description" content="Saturday 19 June 2027 · Olive Grove Hall, Batroun. Tap to open your invitation.">
+<meta property="og:image" content="https://example.com/og-envelope.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="/wedding/og-envelope.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="envelope.jpg">
+<link rel="preload" as="image" href="envelope-seal.webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Shared SVG symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sprig" viewBox="0 0 60 24">
+      <path d="M2 21 Q30 15 58 4" fill="none" stroke="currentColor" stroke-width="1"/>
+      <g fill="currentColor">
+        <ellipse cx="12" cy="15.5" rx="5" ry="1.8" transform="rotate(-38 12 15.5)"/>
+        <ellipse cx="14" cy="21" rx="5" ry="1.8" transform="rotate(18 14 21)"/>
+        <ellipse cx="24" cy="12.5" rx="5" ry="1.8" transform="rotate(-42 24 12.5)"/>
+        <ellipse cx="26" cy="18" rx="5" ry="1.8" transform="rotate(12 26 18)"/>
+        <ellipse cx="36" cy="9" rx="4.6" ry="1.7" transform="rotate(-46 36 9)"/>
+        <ellipse cx="38.5" cy="14.2" rx="4.6" ry="1.7" transform="rotate(6 38.5 14.2)"/>
+        <ellipse cx="47.5" cy="5.6" rx="4" ry="1.5" transform="rotate(-50 47.5 5.6)"/>
+        <ellipse cx="50" cy="10" rx="4" ry="1.5" transform="rotate(0 50 10)"/>
+        <ellipse cx="58" cy="3.6" rx="3.6" ry="1.4" transform="rotate(-24 58 3.6)"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ PAGE 1: ENVELOPE ============ -->
+<!-- Photo envelope (envelope.jpg, shown sideways). Layers, bottom to top:
+     envelope-open.jpg (seal removed) > inside of the envelope > flap (3D, hinged on the right edge)
+     > envelope.jpg (closed, fades as the seal lifts) > wax seal cut-out. The flap shape is a clip-path
+     polygon in image percentages; the seal box is in image percentages too (see style.css). -->
+<section id="envelope" class="page page-envelope" aria-label="Invitation envelope">
+  <div class="env-stage">
+    <div class="env-scene" id="env">
+      <div class="env-layer env-open" aria-hidden="true"></div>
+      <div class="env-layer env-inside" aria-hidden="true"></div>
+      <div class="env-layer env-flap" id="flap" aria-hidden="true">
+        <div class="env-layer flap-front"></div>
+        <div class="env-layer flap-back"></div>
+      </div>
+      <div class="env-layer env-closed" aria-hidden="true"></div>
+      <div class="env-wax" aria-hidden="true"><span class="seal-ring"></span></div>
+    </div>
+    <div class="env-glow" aria-hidden="true"></div>
+    <!-- inner card that emerges -->
+    <div class="env-card" aria-hidden="true">
+      <svg class="sprig-pair" viewBox="0 0 130 24"><use href="#sprig" width="60" height="24" transform="translate(130 0) scale(-1 1)"/><use href="#sprig" width="60" height="24"/></svg>
+      <p class="card-names"><span data-c="couple.groom"></span> <em>&amp;</em> <span data-c="couple.bride"></span></p>
+      <p class="card-date" data-c="date.short"></p>
+      <p class="card-ar" dir="rtl" lang="ar" data-c="couple.ar"></p>
+    </div>
+  </div>
+  <!-- the whole envelope is the control: tapping anywhere (seal included) opens it -->
+  <button class="seal" id="seal" type="button" aria-label="Open the invitation"></button>
+  <p class="tap-hint" id="tapHint" aria-hidden="true">
+    <span>Tap to open</span>
+    <span dir="rtl" lang="ar">اضغطوا لفتح الدعوة</span>
+  </p>
+</section>
+
+<!-- ============ PAGE 2: BISMILLAH + NAMES ============ -->
+<section id="welcome" class="page page-welcome">
+  <!-- COUPLE PHOTO: a placeholder picture in this repository (each wedding uploads its own photo), framed like the
+       template design. couple.jpg has no wash or blur baked in; .photo-veil and the CSS blur add them. -->
+  <img class="couple-photo" alt="" aria-hidden="true" src="couple.jpg" decoding="async">
+  <div class="photo-veil" aria-hidden="true"></div>
+  <div class="content">
+    <!-- Basmala calligraphy: "Basmala.white.svg" by عبد الله (Wikimedia Commons user), licence CC BY-SA 4.0 (attribution + share-alike),
+         https://commons.wikimedia.org/wiki/File:Basmala.white.svg . Recoloured via currentColor (CSS). -->
+    <p class="bismillah reveal" role="img" lang="ar" aria-label="بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"><svg viewBox="0 0 570.4 128.4" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="currentColor" stroke-width=".9" stroke-linejoin="round" d="M92.6 46.5c-.8 4.9-3.7 8.4-9.1 10.5v-.3c2.8-1.7 4.5-3.5 5.1-5.4-2.6.2-4.2.6-4.8 1.4.4-2.3 1.1-3.9 2-4.8.3-.3 2.6-.8 6.8-1.4zm136.9 15c0 2.8-.6 5.3-1.7 7.4-1.1 2.5-2.8 3.7-5.1 3.7-1.5 0-2.6-.1-3.4-.3v2.8c0 3.7-.5 6.2-1.4 7.1-7.6 8.7-14.6 13-21.2 13-2.8 0-5-1.3-6.5-4-1.3-2.1-2-4.5-2-7.1 0-4.3 1.1-9.7 3.1-16.1-2.3 1.7-6 5.2-11.3 10.5-5.9 5.7-10.1 9.6-12.7 11.9-4.9 3.7-8.8 5.7-11.9 5.7-2.3 0-4.2-1.1-5.9-3.3s-2.5-4.7-2.5-7.5c0-3.4 1.1-7.7 3.4-13-.4.2-.8.3-1.4.3-1.3 0-2.5-.1-3.4-.3v2.8c0 3.7-.4 6-1.1 6.8-8.8 8.7-16.1 13-21.5 13-2.8 0-5-1.1-6.5-3.4s-2.3-5-2.3-8.2c0-1.1.5-3.6 1.4-7.5s1.4-7.2 1.4-10c0-2.3-.3-4.5-.8-6.5-2.3-.6-4.5-2.2-6.8-4.8-2.3-2.6-3.7-4-4.5-4-.9 0-2.5 1.6-4.5 4.8-1.5 2.5-2.8 4.9-4 7.4 4.3 2.3 6.5 7.1 6.5 14.7h-1.4c-2.1-.9-4-2-5.9-3.1-1.9-1.3-2.8-3.3-2.8-5.9-4.3 2.1-6.5 4.9-6.5 8.5 0 .4 1.8 4.7 5.5 13s5.5 14.9 5.5 19.8h-.6c-.4-3-2.5-8.6-6.5-16.7-3.6-7.6-5.4-13-5.4-16.4 0-4.9 2.9-9.4 8.8-13.6.8-2.5 2.6-5.7 5.7-9.9 3.4-4.9 6.2-7.4 8.2-7.4.8 0 2.5 1.7 5.4 5.1-.4-.9-.6-1.9-.6-2.8 0-2.5.8-4.5 2.5-6.2 1.7-1.7 3.7-2.5 6.2-2.5 1.9 0 5.6.9 11 2.7 5.4 1.8 10.3 2.7 14.4 2.7l-3.4 5.7c-2.6.4-6.9 2.1-12.7 5.1-5.1 2.6-9.3 4-12.7 4h-1.1c.9 2.6 1.4 5.4 1.4 8.5 0 2.5-.4 5.2-1 8.2-.6 3-1 4.7-1 5.1 0 6 2.5 9.1 7.4 9.1 3.6 0 7.7-1.9 12.4-5.7 3-2.5 5.9-5 8.5-7.6 0-1.3-.8-3.4-2.3-6.2-.8-1.7-1.6-3.4-2.5-5.1l2-4.8c1.7 2.6 2.9 4.5 3.7 5.4 1.3 1.3 2.8 2 4.2 2 1.9 0 3.4-.8 4.5-2.3 0-2.8-.2-5.6-.6-8.2l-4.8-30c-.2-1.9-.6-3.3-1.1-4.2l1.4-4 5.1 9.3v1.7l-2.5-2.5c-.2.4-.2.8 0 1.1l4.2 28.6c.2.8.3 2.1.3 4 0 5.7-1.5 9.1-4.5 10.5-1.9 4.2-2.8 7.8-2.8 11 0 1.7.6 3.3 2 4.8 1.5 1.7 3.3 2.5 5.4 2.5 3.4 0 7.7-2.5 13-7.6 4.7-4.3 9.4-8.8 14.1-13.3 3.6-3 7.1-5.6 10.5-7.6-.9-.4-2.3-1.4-4.2-3.1-2.6-2.1-4-4.5-4-7.1 0-4.3 2.3-6.5 7.1-6.5 9.1 0 18.9 1.6 29.4 4.8l-3.7 5.7c-3.4 1.1-9.5 3.6-18.4 7.4.9 1.5 2 5.1 3.1 10.7-5.1 0-7.6-1.5-7.6-4.5 0-.4.1-1.1.3-2 .2-.9.3-1.6.3-2-.8.6-1.9 1.3-3.4 2.3-1.9 6-2.8 10.5-2.8 13.6 0 6 2.5 9.1 7.6 9.1 5.4 0 12.4-4.5 20.9-13.3-.2-1.3-.9-3.4-2.3-6.2-.9-1.5-1.8-3.1-2.5-4.8l1.7-5.1c1.7 2.8 3 4.6 4 5.4 1.1 1.3 2.5 2 4.2 2 1.9 0 3.4-.8 4.5-2.3-.2-2.8-.5-5.6-.8-8.2l-4.5-29.7c-.4-2.1-.8-3.6-1.1-4.5l1.4-4 4.8 9.3v1.7l-2.3-2.5c-.2.6-.2 1.1 0 1.4l4.2 28.3c0 .2.1 1.5.1 3.4zM103 36.3c0 3.2-1.1 4.8-3.1 4.8-1.9 0-2.8-1.1-2.8-3.1 0-1.3.3-2.9.8-4.8 1.1-2.3 1.7-3.6 1.7-4 .4 1.5.5 2.5.3 3.1 2.1 1.2 3.1 2.6 3.1 4zm-.8 1.2c-.8-.9-1.9-1.6-3.4-2-.8.8-1.1 1.2-1.1 1.4 0 1.1.6 1.7 2 1.7.9 0 1.7-.4 2.5-1.1zm7.6 46.6-2 3.1c-1.1.4-2.3.6-3.7.8-2.1.8-3.1 1.6-3.1 2.5.9 3.7 1.4 6.4 1.4 7.9 0 3.4-.1 5.4-.3 5.9 0-2.1-.4-4.8-1.1-8.2-.8-3.4-1.1-5.6-1.1-6.5 0-1.7.6-2.8 1.8-3.4s2.4-1.1 3.5-1.4c-.8-.6-1.4-.8-2-.8l-1.7 1.4V84c.6-.8 1.1-1.5 1.4-2.1.4-.6.8-1 1.4-1 1.3.1 3 1.2 5.5 3.2zm2.3-14.1-2.3 4.5-4.8-2.3 1.7-4-4.2-2.3 2-4.5 5.1 2.3-2 4 4.5 2.3zm24-21.8c-1.1-.2-3.7-.8-7.9-2-3.4-1.1-6-1.7-7.9-1.7-4.3 0-6.5 1.6-6.5 4.8 0 1.3.5 2.6 1.4 4 .8.8 1.7 1.1 2.8 1.1 2.6 0 5.7-.8 9.1-2.3 5.4-2.4 8.5-3.7 9-3.9zm2.6 21.5c-2.8 7.1-6.4 10.7-10.7 10.7-3.2 0-4.8-1.5-4.8-4.5 0-2.5 2.1-5 6.2-7.6-.8-.6-1.5-.8-2.3-.8-.9 0-1.9.5-2.8 1.4v-1.1c.9-2.1 2.3-3.1 4-3.1 2.8 0 5.1.4 6.8 1.1l-3.4 3.1c-1.3.4-2.8 1.2-4.4 2.5-1.6 1.3-2.4 2.5-2.4 3.4 0 1.7 1.5 2.5 4.5 2.5 2.1 0 4.2-1.1 6.2-3.4.9-1.4 1.9-2.8 3.1-4.2zm5.1-38.5c0 2.3-.8 3.4-2.3 3.4-.8 0-1.5-.4-2.3-1.1-.6 1.5-1.4 2.3-2.5 2.3-1.3 0-2-.8-2-2.5v-3.4c-.4.4-.8.9-1.4 1.7v-1.1c.4-.9 1.3-2.2 2.8-3.7-.6 4-.2 5.9 1.1 5.9.9 0 1.4-.6 1.4-2 0-.6-.2-1.7-.6-3.4l.8-1.7c.6.9.9 2.3 1.1 4.2 0 1.3.5 2 1.4 2 .6 0 .8-.5.8-1.4l-.8-3.7 1.1-2c1 2.5 1.4 4.6 1.4 6.5zm16.1 48.7c-.2 2.6-1.1 4-2.8 4-1.7 0-2.5-.8-2.5-2.5 0-2.5 1.3-5.3 4-8.5-1.3 3-2 5.2-2 6.5 0 1.3.5 2 1.4 2 .9 0 1.5-.5 1.7-1.4h.2zm5.6-16.4c0 4-.5 7-1.4 9.1h-.6c.2-4.2 0-8.5-.6-13l-5.1-32c-.2-1.9-.6-3.3-1.1-4.2l1.4-4 4.8 9.3v1.7l-2.3-2.5c-.2.4-.2.8 0 1.1l4.5 30.3c.4.9.4 2.3.4 4.2zm12.8-35.4c0 .8-.3 1.6-.8 2.5-.6-.6-1.1-.8-1.4-.8-.9 0-1.7 1.3-2.3 4-.4 1.7-.6 3.6-.8 5.7-.6-1.5-1.5-3.5-2.8-5.9-.2.9-.8 1.4-1.7 1.4-1.5 0-2.3-.8-2.3-2.5 0-2.1.6-3.1 2-3.1 1.7 0 3.2 2 4.5 5.9 1.1-6.8 2.5-10.2 4.2-10.2.9-.1 1.4 1 1.4 3zm.3 15.9c-.8 5.1-3.7 8.6-8.8 10.5l-.3-.3c2.8-1.7 4.5-3.5 5.1-5.4-2.6.2-4.2.6-4.8 1.4.4-2.3 1.1-3.9 2-4.8.3-.4 2.6-.9 6.8-1.4zm-.3 17.5L176 66l-4.8-2.3 2.3-4.5 4.8 2.3zm5.1 30.3c0 2.6-.9 4-2.8 4-1.7 0-2.5-.8-2.5-2.5 0-2.5 1.3-5.3 4-8.5h.3c-1.5 3-2.3 5.2-2.3 6.5 0 1.3.5 2 1.4 2s1.5-.5 1.7-1.4h.2zm5.1-60.6c0 2.3-.5 4.8-1.4 7.6.2-1.5.3-3.2.3-5.1 0-3.4-1.1-6-3.1-7.9l.3-3.4c1.3.8 2.3 2.1 3 4 .5 1.9.9 3.5.9 4.8zm23.4 22.4c-5.3-2.3-11.4-3.4-18.4-3.4-3.4 0-5.7.4-6.8 1.1 0 .4 1.2 1.5 3.7 3.3 2.5 1.8 4.5 3.5 6.2 5.2 4-1.9 9.1-3.9 15.3-6.2zm6.3-32c0 1.1-.4 2.5-1 4s-1.5 2.6-2.4 3.4c1.1-2.3 1.7-3.9 1.7-4.8-9.6 3-18.4 8.1-26.3 15.3.2-.9.4-1.9.6-2.8 3.2-3.2 7.5-6.2 12.9-9.1 5.3-2.9 10.1-4.8 14.5-6zm-7.1 49.8c.4 1.5 0 2.3-1.1 2.5-.6.2-1.4-.2-2.5-1.1-.8 1.3-2 3.1-3.7 5.4-2.1 2.5-4.8 4-8.2 4.5l-2.5.6c2.6-1.3 5.6-3.2 8.8-5.7 2.6-2.1 4.5-4.2 5.4-6.2.8-1.5 1.4-2.3 2-2.5.7-.2 1.4.6 1.8 2.5zm2.3-33.6c0 2.3-.8 3.4-2.3 3.4-.8 0-1.5-.5-2.3-1.4-.6 1.5-1.4 2.3-2.5 2.3s-1.8-.8-2-2.3v-3.7c-.4.6-.8 1.1-1.1 1.7V37c.2-.9 1.1-2.2 2.5-3.7-.6 3.7-.2 5.7 1.1 5.7.9 0 1.4-.6 1.4-1.7 0-.6-.2-1.8-.6-3.7l1.1-1.4c.4.8.6 2.1.8 4 0 1.3.5 2 1.4 2 .6 0 .8-.4.8-1.1 0-.2-.3-1.4-.8-3.7l1.1-2.3c1 2.3 1.4 4.6 1.4 6.7zm-2.9 34.5c-.8-1.1-1.6-1.4-2.5-.8 1.1.7 2 1 2.5.8zm25.8 11.6c0 1.9-.6 2.8-1.7 2.8-.8 0-1.6-.3-2.5-.8-3.2 5.9-9.1 8.7-17.8 8.5h-.3V94c8.5-2.1 14.2-5 17.3-8.8-.9-.4-1.4-.9-1.4-1.7 0-.6.3-1.2.8-2 .6-.8 1.1-1.1 1.4-1.1l-.3-1.1.3-.3c.4 0 1.1.4 2 1.1v.3c1.4 1.8 2.2 2.9 2.2 3.5zm3.1-20.4c0 4-.5 7-1.4 9.1h-.6c.2-4.2-.1-8.5-.8-13l-4.8-32c-.4-1.9-.8-3.3-1.1-4.2l1.4-4 4.8 9.3v1.7l-2.3-2.5c-.2.4-.3.8-.3 1.1l4.8 30.3c.2.9.3 2.3.3 4.2zm-6.2 18.9c0-.4-.2-.6-.6-.6-.8 0-1.3.3-1.7.8.4.6.9.9 1.7 1.1 0-.2.1-.4.3-.7.2-.1.3-.3.3-.6zM486.9 72c0 2.6-.6 4.8-1.8 6.5-1.2 1.7-2.6 2.5-4.1 2.5-2.8 0-4.8-1.8-5.9-5.4-.8 3.6-2.3 5.4-4.8 5.4-2.3 0-3.7-1.5-4.5-4.5-1.5 3.6-4.2 5.4-7.9 5.4-1.3 0-2.4-.5-3.3-1.6-.8-1.1-1.3-2.2-1.3-3.5v-1.4c-26.6 8.3-53.7 12.4-81.5 12.4-13.4 0-26.5-1.1-39.3-3.4-12.3-1.9-21.5-4.4-27.5-7.6 0 2.6-.1 5.3-.3 7.9h-.6c-2.3-1.5-3.7-3.3-4.2-5.4-.2-1.5-.4-2.9-.4-4.2-.1-1.3-1.3-2-3.5-2-2.1 0-5.6 3-10.6 9.1-5 6-8.8 9.1-11.5 9.1-1.5 0-2.8-.7-4-2.1s-1.7-3.3-1.7-5.8c0-1.3.3-2.9.8-4.8-.9.4-1.9.6-2.8.6-3.7 0-6.2-2.5-7.4-7.6-.4 6.2-3.2 9.3-8.5 9.3-2.3 0-4-1.2-5.1-3.7-.8-1.9-1.1-4-.8-6.5 0-.4.2-1.7.6-4 .2-1.9.3-3.6.3-5.1-1.3 1.9-2.3 4.3-2.8 7.4-.4 2.1-.8 4.2-1.1 6.2-.8 3.4-2 5.1-3.7 5.1-1.3 0-2.5-1.1-3.4-3.3-.9-2.2-1.4-4.5-1.4-6.9 0-2.6.2-5.6.6-8.8l.6.3c-.2 1.5-.3 3-.3 4.5 0 6.4 1.3 9.6 4 9.6.9 0 1.8-1.4 2.5-4.2 1.3-4.7 2.1-7.4 2.3-8.2 1.3-3.2 3-5.4 5.1-6.5v3.7c-.8 4.9-1.1 7.9-1.1 9.1 0 4.2 1.5 6.2 4.5 6.2 1.9 0 3.5-.8 5-2.3 1.4-1.5 2.1-3.3 2.1-5.4l-2-11 1.4-4c.9 1.9 1.5 3.4 1.7 4.5.6 3.2 1.1 6.5 1.4 9.9 1.1 4.7 3.2 7.1 6.2 7.1 1.9 0 3.2-.8 4-2.3-.9-2.1-1.9-4.2-2.8-6.2-1.3-3.4-2.1-6-2.3-7.9l-.8-2 1.1-4 4 6.2v1.4c-.6-.4-1.1-.8-1.7-1.4-.2.4-.2.6 0 .6 2.6 6 4 10.2 4 12.4 0 3.4-.8 5.7-2.3 6.8-.6 1.9-.8 3.3-.8 4.2 0 2.6 1.3 4 4 4 2.5 0 6.2-3 11-9.2 4.9-6.2 8.8-9.2 11.6-9.2.9 0 2.3.6 4 1.7l1.4-3.4c2.6 3.7 10.5 7.3 23.5 10.5 14.9 3.4 32 5.1 51.2 5.1 13 0 27.4-1.1 43-3.4 13.6-2.1 25.8-4.6 36.8-7.6-.4.6-.6 1.2-.6 2 0 1.1.4 2.2 1.1 3.1.8.9 1.6 1.4 2.5 1.4 1.9 0 3.9-.9 5.9-2.8l3.7-3.7.3.3v1.1c0 2.6.9 4 2.8 4 .9 0 2-.8 3.1-2.5 1.3-2.3 2.3-3.6 2.8-4h.3v1.1c0 1.5.5 2.9 1.6 4.1 1.1 1.2 2.1 1.8 3 1.8 1.9 0 2.8-.8 2.8-2.3 0-1.7-1.4-5.1-4.2-10.2-3-5.4-4.6-8.8-4.8-9.9-.2-.4-.5-.9-.8-1.6-.4-.6-.6-1.1-.6-1.3l.8-4.2 5.7 5.9v1.1l-2.5-1.1v.6c1.5 2.3 3 4.5 4.5 6.8 2.3 4.8 3.7 8.6 3.7 11.4zM235.4 84.7c-.4-.4-.9-1.1-1.7-2l-.6 1.4c.6.4 1.1.6 1.7.6h.6zm33.7-65.9c0 .9-.4 2.2-1.1 3.7-.8 1.5-1.5 2.8-2.3 3.7 1.1-2.3 1.7-4 1.7-5.1-11.7 3.7-21.6 9.3-29.7 16.7 0-.9.2-2 .6-3.1 3.2-3 8.1-6.2 14.7-9.6 6.2-3.3 11.6-5.4 16.1-6.3zM257.2 85c0 .9-.4 1.9-1.1 2.8-.4-.6-.8-.8-1.4-.8-.9 0-1.7 1.2-2.3 3.7-.2 1.9-.5 3.7-.8 5.7-.4-1.3-1.3-3.3-2.8-5.9-.2 1.1-.6 1.7-1.4 1.7-1.7 0-2.5-.9-2.5-2.8s.8-2.8 2.3-2.8 3 2 4.5 5.9c.9-6.8 2.3-10.2 4.2-10.2.8-.1 1.3.8 1.3 2.7zm.6-41.9c0 2.3-.8 3.4-2.5 3.4-.6 0-1.3-.5-2.3-1.4-.4 1.5-1.2 2.3-2.5 2.3-1.1 0-1.8-.8-2-2.3v-3.7c-.4.6-.8 1.1-1.1 1.7V42c.4-.8 1.2-1.9 2.5-3.4-.4 3.7 0 5.7 1.1 5.7.9 0 1.4-.6 1.4-2 0-.4-.2-1.5-.6-3.4l1.1-1.4c.6.8.8 2.1.8 4 .2 1.3.8 2 1.7 2 .6 0 .8-.4.8-1.1 0-.2-.3-1.4-.8-3.7l.8-2.3c1.1 2.4 1.6 4.7 1.6 6.7zm7-3.1c0 2.3-.5 4.8-1.4 7.6.2-1.5.3-3.2.3-5.1 0-3.4-1.1-6-3.1-7.9l.3-3.7c1.1.9 2.1 2.3 2.8 4.2.8 2 1.1 3.6 1.1 4.9zm15.3 23.5c0 4-.4 7-1.1 9.1h-.6c.2-4.2-.1-8.5-.8-13l-4.8-32c-.4-1.9-.8-3.3-1.1-4.2l1.4-4 4.8 9.3v1.7l-2.3-2.5c-.2.4-.3.8-.3 1.1l4.8 30.3v4.2zM298.2 83c.2 1.7-.2 2.6-1.1 2.8-.6 0-1.5-.4-2.8-1.1-.8 1.3-1.9 3-3.4 5.1-2.3 2.5-5.1 4-8.5 4.8l-2.3.3c2.5-1.1 5.3-2.9 8.5-5.4 2.8-2.3 4.7-4.5 5.7-6.5.8-1.5 1.3-2.3 1.7-2.5.9 0 1.6.8 2.2 2.5zm-1.7-50.6c0 .8-.3 1.6-.8 2.5-.6-.6-1.1-.8-1.4-.8-.9 0-1.7 1.2-2.3 3.7-.4 2.1-.6 4-.8 5.7-.4-1.3-1.3-3.2-2.8-5.7-.2.9-.8 1.4-1.7 1.4-1.5 0-2.3-.8-2.3-2.5 0-2.1.6-3.1 2-3.1 1.7 0 3.2 2 4.5 5.9 1.1-6.8 2.5-10.2 4.2-10.2.9 0 1.4 1 1.4 3.1zm.9 15.5-2 3.1c-1.1.4-2.3.8-3.7 1.1-2.1.6-3.1 1.4-3.1 2.5.9 3.6 1.4 6.2 1.4 7.6 0 3.4-.1 5.4-.3 5.9 0-2.1-.4-4.7-1.1-8.1s-1.1-5.4-1.1-6.4c0-1.9.6-3.1 1.8-3.7 1.2-.6 2.4-1.1 3.5-1.4-.9-.4-1.7-.6-2.3-.6.2 0-.4.4-1.7 1.1l.3-1.4c.4-.6.8-1.3 1.3-2.1s1-1.3 1.6-1.3c1.1.3 2.9 1.5 5.4 3.7zm.2 36c-.8-1.1-1.6-1.4-2.5-.8.9.7 1.8 1 2.5.8zm6-7.7c-.6-.4-1.4-1.2-2.5-2.5 0 .9.2 2.1.7 3.3.5 1.2 1 1.8 1.6 1.8.1 0 .2-.9.2-2.6zM449 88.1c-.9 0-1.6-.6-2-1.7-1.3 1.7-2.5 2.5-3.7 2.5-.4 0-1-.3-1.8-.8-.8-.6-1.3-.8-1.6-.8-.9 0-2.8.6-5.4 1.7-3.4 1.5-6.2 2.6-8.2 3.4-4.2 1.3-8.7 2-13.6 2l-.3-.6c4.2 0 8.3-.8 12.4-2.5 2.3-.8 5.4-2.3 9.6-4.5 3-1.7 5.2-2.5 6.5-2.5.4 0 .9.4 1.7 1.1.8.8 1.4 1.1 2 1.1.8 0 1.6-.9 2.5-2.8l.8-.6c-.2 1.5.3 2.3 1.4 2.3.6 0 1.1-.9 1.7-2.8l.6-.3c.2 3.8-.7 5.8-2.6 5.8zm22.3-51.5c0 .8-.4 1.7-1.1 2.8-.6-.8-1.1-1.1-1.4-1.1-.9 0-1.7 1.3-2.3 4-.2 1.7-.5 3.5-.8 5.4-.6-1.3-1.5-3.2-2.8-5.7-.2.9-.8 1.4-1.7 1.4-1.5 0-2.3-.8-2.3-2.5 0-2.1.6-3.1 2-3.1 1.7 0 3.2 2 4.5 5.9 1.1-6.8 2.5-10.2 4.2-10.2 1.2 0 1.7 1.1 1.7 3.1zm-2.2 21.8c0 3.4-1.1 5.1-3.1 5.1-1.9 0-2.8-1.1-2.8-3.1 0-1.3.4-2.9 1.1-4.8 1.1-2.3 1.7-3.6 1.7-4 .4 1.5.5 2.5.3 3.1 1.8 1.2 2.8 2.4 2.8 3.7zm-.9 1.4c-.8-.9-1.9-1.7-3.4-2.3-.6.9-.8 1.5-.8 1.7 0 .9.6 1.4 2 1.4.9.1 1.6-.2 2.2-.8zm14.2 26.9-2 4.5-4.8-2.5 2-4.5 4.8 2.5z"/></svg></p>
+    <p class="ayah reveal" dir="rtl" lang="ar" style="--d:.15s">وَخَلَقْنَاكُمْ أَزْوَاجًا</p>
+    <h1 class="names" id="names" aria-label="">
+      <span class="name-line" data-split="couple.groom"></span>
+      <span class="amp">&amp;</span>
+      <span class="name-line" data-split="couple.bride"></span>
+    </h1>
+    <svg class="flourish" viewBox="0 0 240 30" aria-hidden="true">
+      <path d="M10 15 C50 15 70 4 100 10 C112 12 114 22 120 22 C126 22 128 12 140 10 C170 4 190 15 230 15" fill="none" stroke="#b8975a" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="120" cy="22" r="2" fill="#b8975a"/>
+    </svg>
+    <p class="invite-line reveal" style="--d:.2s">Invite you to celebrate their wedding</p>
+    <p class="date-en reveal" style="--d:.3s" data-c="date.en"></p>
+    <p class="date-ar reveal" style="--d:.4s" dir="rtl" lang="ar" data-c="date.ar"></p>
+    <p class="time-line reveal" style="--d:.5s"><span data-c="date.timeEn"></span> <span class="time-dot">·</span> <span dir="rtl" lang="ar" data-c="date.timeAr"></span></p>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"><span></span><svg viewBox="0 0 130 24"><use href="#sprig" width="60" height="24" transform="translate(130 0) scale(-1 1)"/><circle cx="65" cy="16" r="2.2" fill="currentColor"/><use href="#sprig" width="60" height="24"/></svg><span></span></div>
+
+<!-- ============ PAGE 3: FAMILIES ============ -->
+<section id="families" class="page page-families">
+  <div class="content">
+    <div class="block-ar" dir="rtl" lang="ar">
+      <p class="ar-lead reveal">تتشرف عائلة</p>
+      <div class="parents reveal" style="--d:.1s">
+        <span data-c="families.ar.father1"></span>
+        <span class="and">و</span>
+        <span data-c="families.ar.father2"></span>
+      </div>
+      <p class="ar-body reveal" style="--d:.2s">بدعوتكم لحضور حفل زفاف ولديهما</p>
+      <p class="ar-names reveal" style="--d:.3s" data-c="couple.ar"></p>
+    </div>
+
+    <svg class="mini-orn reveal" viewBox="0 0 130 24" aria-hidden="true"><use href="#sprig" width="60" height="24" transform="translate(130 0) scale(-1 1)"/><circle cx="65" cy="16" r="2.2" fill="currentColor"/><use href="#sprig" width="60" height="24"/></svg>
+
+    <div class="block-en">
+      <p class="label reveal">The family of</p>
+      <p class="parents-en reveal" style="--d:.1s"><span data-c="families.en.father1"></span><em>&amp;</em><span data-c="families.en.father2"></span></p>
+      <p class="en-body reveal" style="--d:.2s">Request the honor of your presence at the wedding of their son and daughter</p>
+      <p class="en-names reveal" style="--d:.3s"><span data-c="couple.groom"></span> <em>&amp;</em> <span data-c="couple.bride"></span></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"><span></span><svg viewBox="0 0 130 24"><use href="#sprig" width="60" height="24" transform="translate(130 0) scale(-1 1)"/><circle cx="65" cy="16" r="2.2" fill="currentColor"/><use href="#sprig" width="60" height="24"/></svg><span></span></div>
+
+<!-- ============ PAGE 4: COUNTDOWN + PLACE ============ -->
+<section id="countdown" class="page page-countdown">
+  <div class="content">
+    <p class="label reveal">Countdown</p>
+    <h2 class="heading reveal" style="--d:.1s">Until the big day</h2>
+    <div class="clock reveal" style="--d:.2s" role="timer" aria-live="off">
+      <div class="unit"><span class="num" id="cd-d">00</span><span class="unit-label">Days</span></div>
+      <span class="colon">:</span>
+      <div class="unit"><span class="num" id="cd-h">00</span><span class="unit-label">Hours</span></div>
+      <span class="colon">:</span>
+      <div class="unit"><span class="num" id="cd-m">00</span><span class="unit-label">Minutes</span></div>
+      <span class="colon">:</span>
+      <div class="unit"><span class="num" id="cd-s">00</span><span class="unit-label">Seconds</span></div>
+    </div>
+    <p class="time-line cd-time reveal" style="--d:.3s"><span data-c="date.en"></span><br><span data-c="date.timeEn"></span> <span class="time-dot">·</span> <span dir="rtl" lang="ar" data-c="date.timeAr"></span></p>
+    <p class="cd-done" id="cdDone" hidden>Today is the day &middot; <span dir="rtl" lang="ar">اليوم هو اليوم</span></p>
+
+    <div class="rule reveal" aria-hidden="true"></div>
+
+    <p class="label reveal">The place</p>
+    <h2 class="heading reveal" style="--d:.1s">Where we celebrate</h2>
+    <p class="ar-sub reveal" style="--d:.15s" dir="rtl" lang="ar">المكان</p>
+    <div class="reserved venue-card reveal" style="--d:.2s">
+      <div class="res-row">
+        <span class="lbl">Venue</span>
+        <span class="lbl" dir="rtl" lang="ar">المكان</span>
+      </div>
+      <p class="venue" data-c="venue.name"></p>
+      <p class="venue-city" data-c="venue.city"></p>
+      <p class="venue-ar" dir="rtl" lang="ar" data-c="venue.ar"></p>
+      <a class="btn-outline" id="mapsLink" href="#" target="_blank" rel="noopener">
+        <span>Get directions</span>
+        <span dir="rtl" lang="ar">الموقع على الخريطة</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"><span></span><svg viewBox="0 0 130 24"><use href="#sprig" width="60" height="24" transform="translate(130 0) scale(-1 1)"/><circle cx="65" cy="16" r="2.2" fill="currentColor"/><use href="#sprig" width="60" height="24"/></svg><span></span></div>
+
+<!-- ============ PAGE 5: GIFT ============ -->
+<section id="gift" class="page page-gift">
+  <div class="content">
+    <p class="label reveal">With gratitude</p>
+    <h2 class="heading reveal" style="--d:.1s">Gift registry</h2>
+    <p class="gift-en reveal" style="--d:.15s">Your love, laughter, and presence are all we could wish for on our special day. For those who wish to honor us with a gift, your kind gesture would be deeply appreciated.</p>
+    <p class="gift-ar reveal" style="--d:.2s" dir="rtl" lang="ar">وجودكم معنا ومشاركتكم فرحتنا في يومنا المميّز هو أجمل هدية وأغلى أمنية. ولمن يرغب في التعبير عن محبّته بهدية، فإن لفتتكم الطيّبة تسعد قلوبنا ونقدّرها بكل محبّة وامتنان.</p>
+    <div class="account reveal" style="--d:.25s">
+      <div class="res-row stack">
+        <span class="lbl"><span data-c="gift.provider"></span> account number</span>
+        <span class="lbl" dir="rtl" lang="ar">رقم الحساب</span>
+      </div>
+      <p class="acct-num" id="acctNum" dir="ltr"></p>
+      <button type="button" class="btn-outline small" id="copyBtn">
+        <span id="copyLabel">Tap to copy</span><span dir="rtl" lang="ar" id="copyLabelAr">انسخ الرقم</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"><span></span><svg viewBox="0 0 130 24"><use href="#sprig" width="60" height="24" transform="translate(130 0) scale(-1 1)"/><circle cx="65" cy="16" r="2.2" fill="currentColor"/><use href="#sprig" width="60" height="24"/></svg><span></span></div>
+
+<!-- ============ PAGE 6: RSVP (last page) ============ -->
+<section id="rsvp" class="page page-rsvp">
+  <div class="content">
+    <h2 class="heading big reveal">RSVP</h2>
+    <p class="ar-title reveal" style="--d:.05s" dir="rtl" lang="ar">تأكيد الحضور</p>
+    <p class="replyby reveal" style="--d:.1s" data-c="rsvp.replyByEn"></p>
+    <p class="replyby-ar reveal" style="--d:.15s" dir="rtl" lang="ar" data-c="rsvp.replyByAr"></p>
+
+    <p class="rsvp-loading" id="rsvpLoading">Loading your invitation&hellip;</p>
+
+    <!-- shown when there is no token / unknown token -->
+    <div class="nolink reveal" id="rsvpNoLink" hidden>
+      <p>To reply, please open the personal link from your invitation email.</p>
+      <p dir="rtl" lang="ar">لتأكيد الحضور، الرجاء فتح الرابط الخاص بكم من رسالة الدعوة.</p>
+    </div>
+
+    <div id="rsvpBox" hidden>
+      <div class="reserved reveal">
+        <div class="res-row">
+          <span class="lbl">Reserved for</span>
+          <span class="lbl" dir="rtl" lang="ar">محجوز لـ</span>
+        </div>
+        <p class="guest-name" id="guestName"></p>
+        <div class="res-row">
+          <span class="lbl">Seats reserved</span>
+          <span class="lbl" dir="rtl" lang="ar">عدد المقاعد</span>
+        </div>
+        <p class="seats" id="seatCount"></p>
+      </div>
+
+      <!-- polite adults-only note (text in CONFIG.rsvp.kidsNote*) -->
+      <div class="kids-note reveal">
+        <p class="kids-ar" dir="rtl" lang="ar" data-c="rsvp.kidsNoteAr"></p>
+        <p class="kids-en" data-c="rsvp.kidsNoteEn"></p>
+      </div>
+
+      <p class="prev-note" id="prevNote" hidden></p>
+
+      <form id="rsvpForm" class="reveal" novalidate>
+        <fieldset class="field">
+          <legend class="bi"><span>Will you join us?</span><span dir="rtl" lang="ar">هل ستشاركونا؟</span></legend>
+          <div class="choice">
+            <button type="button" id="btnYes" aria-pressed="false">
+              <span>Joyfully accept</span><span dir="rtl" lang="ar">بكل سرور</span>
+            </button>
+            <button type="button" id="btnNo" aria-pressed="false">
+              <span>Regretfully decline</span><span dir="rtl" lang="ar">نعتذر</span>
+            </button>
+          </div>
+        </fieldset>
+
+        <div id="partyBox" hidden>
+          <div class="field">
+            <label class="bi" for="guestCount"><span>How many of you?</span><span dir="rtl" lang="ar">عدد الحضور</span></label>
+            <div class="select-wrap"><select id="guestCount"></select></div>
+          </div>
+          <div class="field">
+            <p class="bi"><span>Names</span><span dir="rtl" lang="ar">الأسماء</span></p>
+            <p class="form-err names-err" id="namesErr" role="alert" hidden></p>
+            <div id="nameFields" class="name-fields"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="bi" for="note"><span>Share your love and wishes</span><span dir="rtl" lang="ar">شاركونا محبتكم وأمنياتكم</span></label>
+          <textarea id="note" rows="3" maxlength="500"></textarea>
+        </div>
+
+        <p class="form-err" id="formErr" role="alert" hidden></p>
+
+        <button class="btn-gold" type="submit" id="sendBtn">
+          <span>Send your reply</span><span dir="rtl" lang="ar">أرسلوا ردّكم</span>
+        </button>
+        <p class="overwrite-hint">You can reopen your link any time; sending again replaces your previous reply.<br><span dir="rtl" lang="ar">يمكنكم فتح الرابط مجدداً وتعديل ردّكم في أي وقت.</span></p>
+      </form>
+
+      <div class="confirm" id="confirm" role="status" hidden></div>
+    </div>
+  </div>
+  <footer class="foot">
+    <svg viewBox="0 0 130 24" aria-hidden="true"><use href="#sprig" width="60" height="24" transform="translate(130 0) scale(-1 1)"/><circle cx="65" cy="16" r="2.2" fill="currentColor"/><use href="#sprig" width="60" height="24"/></svg>
+    <p class="foot-mono" data-c="couple.monogram"></p>
+    <p class="foot-date" data-c="date.short"></p>
+  </footer>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

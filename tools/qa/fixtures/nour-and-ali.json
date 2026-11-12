@@ -1,0 +1,210 @@
+{
+  "wedding": {
+    "slug": "nour-and-ali",
+    "groom": "Ali",
+    "bride": "Nour",
+    "event_at": "2027-02-14T16:30:00.000Z",
+    "event_date": "2027-02-14",
+    "event_time": "18:30",
+    "timezone": "Asia/Beirut",
+    "reply_by": "2027-05-15",
+    "status": "live",
+    "notes": "",
+    "published_at": "2026-11-02T10:00:00.000Z"
+  },
+  "password": "wedding",
+  "settings": {
+    "wa_message_a": "Dear {name},\n\nAli & Nour invite you to celebrate their wedding.\n\n{link}",
+    "wa_message_b": "Dear {name},\n\nAli & Nour invite you to their wedding.\n\n{link}",
+    "wa_reminder_a": "Dear {name}, a gentle reminder to answer.\n{link}",
+    "wa_reminder_b": "Dear {name}, a gentle reminder to answer.\n{link}",
+    "meta": {}
+  },
+  "invite": {
+    "draft": {
+      "version": 1,
+      "mode": "template",
+      "config": {
+        "couple": {
+          "groom": "Ali",
+          "bride": "Nour",
+          "monogram": "A & N",
+          "ar": "علي و نور"
+        },
+        "date": {
+          "iso": "2027-02-14T18:30:00+02:00",
+          "en": "Sunday 14 February 2027",
+          "ar": "السبت ١٩ حزيران ٢٠٢٧",
+          "short": "14 · 02 · 2027",
+          "timeEn": "6:30 PM",
+          "timeAr": "٦:٣٠ مساءً"
+        },
+        "families": {
+          "en": {
+            "father1": "Eng. Samir Mansour",
+            "father2": "Mr. Fadi Nassar"
+          },
+          "ar": {
+            "father1": "المهندس سمير منصور",
+            "father2": "السيد فادي نصار"
+          }
+        },
+        "venue": {
+          "name": "The Garden",
+          "city": "Broummana, Lebanon",
+          "ar": "البترون، لبنان",
+          "mapsQuery": "Olive Grove Hall Batroun Lebanon"
+        },
+        "rsvp": {
+          "replyByEn": "Please reply before May 15",
+          "replyByAr": "الرجاء التأكيد قبل ١٥ أيار",
+          "kidsNoteAr": "نومًا هنيئًا لأطفالكم، وسهرة سعيدة لكم",
+          "kidsNoteEn": "Sweet dreams to your little ones, and a lovely evening to you."
+        },
+        "gift": {
+          "provider": "Sample Pay",
+          "accountNumber": "12 345 678"
+        },
+        "music": {
+          "src": "music.m4a",
+          "startAt": 0,
+          "loop": true,
+          "volume": 0.6,
+          "enabled": true
+        }
+      },
+      "show": {
+        "kidsNote": false,
+        "gift": true,
+        "bismillah": false
+      },
+      "theme": {
+        "paper": "#fbf3f1",
+        "paper2": "#f4e6e3",
+        "gold": "#c98b8b",
+        "goldD": "#9c5f5f",
+        "goldL": "#ecc9c6",
+        "ink": "#3b2f2f",
+        "inkSoft": "#6e5a5a",
+        "serif": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+        "sans": "\"Jost\", \"Helvetica Neue\", Arial, sans-serif",
+        "arabic": "\"Cairo\", \"Geeza Pro\", sans-serif",
+        "baseSize": 16
+      },
+      "assets": {
+        "envelope": null,
+        "envelopeOpen": null,
+        "seal": null,
+        "couple": null,
+        "og": null,
+        "music": null
+      },
+      "slides": []
+    },
+    "live": {
+      "version": 1,
+      "mode": "template",
+      "config": {
+        "couple": {
+          "groom": "Ali",
+          "bride": "Nour",
+          "monogram": "A & N",
+          "ar": "علي و نور"
+        },
+        "date": {
+          "iso": "2027-02-14T18:30:00+02:00",
+          "en": "Sunday 14 February 2027",
+          "ar": "السبت ١٩ حزيران ٢٠٢٧",
+          "short": "14 · 02 · 2027",
+          "timeEn": "6:30 PM",
+          "timeAr": "٦:٣٠ مساءً"
+        },
+        "families": {
+          "en": {
+            "father1": "Eng. Samir Mansour",
+            "father2": "Mr. Fadi Nassar"
+          },
+          "ar": {
+            "father1": "المهندس سمير منصور",
+            "father2": "السيد فادي نصار"
+          }
+        },
+        "venue": {
+          "name": "The Garden",
+          "city": "Broummana, Lebanon",
+          "ar": "البترون، لبنان",
+          "mapsQuery": "Olive Grove Hall Batroun Lebanon"
+        },
+        "rsvp": {
+          "replyByEn": "Please reply before May 15",
+          "replyByAr": "الرجاء التأكيد قبل ١٥ أيار",
+          "kidsNoteAr": "نومًا هنيئًا لأطفالكم، وسهرة سعيدة لكم",
+          "kidsNoteEn": "Sweet dreams to your little ones, and a lovely evening to you."
+        },
+        "gift": {
+          "provider": "Sample Pay",
+          "accountNumber": "12 345 678"
+        },
+        "music": {
+          "src": "music.m4a",
+          "startAt": 0,
+          "loop": true,
+          "volume": 0.6,
+          "enabled": true
+        }
+      },
+      "show": {
+        "kidsNote": false,
+        "gift": true,
+        "bismillah": false
+      },
+      "theme": {
+        "paper": "#fbf3f1",
+        "paper2": "#f4e6e3",
+        "gold": "#c98b8b",
+        "goldD": "#9c5f5f",
+        "goldL": "#ecc9c6",
+        "ink": "#3b2f2f",
+        "inkSoft": "#6e5a5a",
+        "serif": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+        "sans": "\"Jost\", \"Helvetica Neue\", Arial, sans-serif",
+        "arabic": "\"Cairo\", \"Geeza Pro\", sans-serif",
+        "baseSize": 16
+      },
+      "assets": {
+        "envelope": null,
+        "envelopeOpen": null,
+        "seal": null,
+        "couple": null,
+        "og": null,
+        "music": null
+      },
+      "slides": []
+    },
+    "draft_updated_at": "2026-11-02T10:00:00.000Z",
+    "draft_updated_by": "Owner",
+    "published_at": "2026-11-02T10:00:00.000Z",
+    "published_by": "Owner"
+  },
+  "families": [
+    {
+      "token": "TOKNOUR001",
+      "name": "The Fares Family",
+      "side": "a",
+      "max_guests": 5,
+      "message": null,
+      "phone": "+96170000002",
+      "email": null,
+      "created_at": "2026-11-05T18:00:00.000Z",
+      "created_by": "Rima",
+      "updated_at": "2026-11-05T18:00:00.000Z",
+      "updated_by": "Rima",
+      "sent": null,
+      "sends": [],
+      "opened": null,
+      "response": null
+    }
+  ],
+  "activity": [],
+  "helpers": []
+}

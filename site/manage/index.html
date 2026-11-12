@@ -1,0 +1,783 @@
+<!doctype html>
+<!--
+  WEDDING GUEST PLATFORM: THE OWNER'S MANAGER (site/manage/index.html)
+  What it is:  the owner's own page at https://<site>/manage/ . From here she creates a new wedding (its
+               address, date, helpers' password, starting design), sees every wedding at a glance, sends the
+               couple their links, changes a wedding's password, archives or deletes a wedding, looks at all
+               guests of all weddings together (Data, with Excel download), runs a check for mistakes (Check),
+               and makes or restores backups.
+  Who uses it: only the owner, with the owner password (set on Netlify as OWNER_PASSWORD).
+  Talks to:    /api/manage/<action>   (docs/API.md section 3), and links to each wedding's
+               /<wedding>/admin/ page, which accepts the owner's login without the wedding password.
+               SheetJS from cdn.sheetjs.com for the Excel download. Nothing else.
+  Must not change, and why:
+    - Delete asks twice and makes her type the wedding's address, and downloads a full copy first.
+      Archive and restore ask twice too. A wedding's guest list cannot be typed in again.
+    - Plain words only: no codes, IDs, tokens or database words on screen.
+    - Passwords are never stored by this page; the one shown after "Create" is only kept on screen.
+  //notes: (developers)
+    - One file, vanilla JS, no build. Same look and the same modal/toast/tap-guard code as site/app/admin.html
+      (copied, not shared, so each page stays a single file).
+    - Views: weddings (default), data, check, backups; switch with the tab bar (#weddings, #data, #check, #backups).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="format-detection" content="telephone=no">
+<title>Manage weddings · Wedding Guest Platform</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; background: #faf7f2; color: #2b2b2b; margin: 0; font-size: 17px; line-height: 1.4; overflow-x: hidden; }
+  body.modal-open { overflow: hidden; }
+  [hidden] { display: none !important; }
+  header.top { background: #4a3f2f; color: #fff; padding: 8px 14px; padding-top: max(8px, env(safe-area-inset-top)); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  header.top h1 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: .06em; font-family: Georgia, serif; }
+  header.top h1 b { color: #e2cd9d; font-weight: 600; }
+  header.top .who { font-size: 13px; color: #e9dcc3; text-align: right; }
+  header.top .who button { background: none; border: 0; color: #e9dcc3; text-decoration: underline; font: inherit; padding: 6px 0; min-height: 44px; min-width: 44px; cursor: pointer; }
+  main { max-width: 1040px; margin: 0 auto; padding: 8px 14px 110px; }
+  section.box { background: #fff; border: 1px solid #e6e0d6; border-radius: 16px; padding: 18px 16px; margin: 14px 0; }
+  h2 { margin: 0 0 8px; font-size: 21px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  h2 small { font-size: 14px; font-weight: 400; color: #7a756b; }
+  h3 { margin: 18px 0 8px; font-size: 18px; }
+  p.help { color: #5e5a52; margin: 0 0 12px; line-height: 1.5; }
+  button, .btn { font: inherit; font-size: 17px; font-weight: 600; padding: 12px 16px; min-height: 50px; border-radius: 12px; border: 2px solid #4a3f2f; background: #4a3f2f; color: #fff; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; text-align: center; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  button.secondary, .btn.secondary { background: #fff; color: #4a3f2f; }
+  button.green, .btn.green { background: #1a8a4a; border-color: #1a8a4a; color: #fff; }
+  button.red { background: #b3261e; border-color: #b3261e; color: #fff; }
+  button.red-outline { background: #fff; border-color: #b3261e; color: #b3261e; }
+  button.link { background: none; border: 0; color: #4a3f2f; text-decoration: underline; min-height: 44px; padding: 8px 4px; font-weight: 500; font-size: 16px; }
+  button.small, .btn.small { min-height: 44px; font-size: 15px; padding: 8px 12px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .full { width: 100%; }
+  .big { font-size: 20px; min-height: 60px; }
+  input[type=text], input[type=password], input[type=search], input[type=date], input[type=time], textarea, select { font: inherit; font-size: 17px; width: 100%; padding: 12px; border: 2px solid #c9c2b6; border-radius: 12px; background: #fff; color: inherit; min-height: 50px; }
+  select { -webkit-appearance: none; appearance: none; padding-right: 30px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234a3f2f' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 12px center; }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: #b8975a; }
+  label.f { display: block; margin: 14px 0 6px; font-size: 15px; font-weight: 700; }
+  .err { color: #b3261e; font-weight: 600; margin: 8px 0 0; }
+  .note { padding: 12px 14px; border-radius: 12px; margin: 12px 0; line-height: 1.5; }
+  .note.ok { background: #e6f4ea; } .note.bad { background: #fbe9e9; } .note.info { background: #eef1f7; } .note.warn { background: #fff6e0; }
+  .muted { color: #7a756b; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 10px; }
+  @media (max-width: 520px) { .three { grid-template-columns: 1fr 1fr; } }
+  .row { display: grid; gap: 14px; }
+  @media (min-width: 900px) { .row { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; } }
+
+  .tabbar { position: sticky; top: 0; z-index: 20; background: #faf7f2; padding: 8px 14px; margin: 0 -14px; border-bottom: 1px solid #e6e0d6; }
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .tabs button { font-size: 15px; font-weight: 700; padding: 8px 4px; min-height: 46px; background: #fff; color: #4a3f2f; border: 2px solid #4a3f2f; border-radius: 12px; }
+  .tabs button.on { background: #4a3f2f; color: #fff; }
+  .health { font-size: 14px; color: #5e5a52; margin: 10px 2px 0; display: flex; gap: 6px 14px; flex-wrap: wrap; }
+  .health span::before { content: "● "; color: #1a8a4a; } .health span.warn::before { color: #c77d14; } .health span.bad::before { color: #b3261e; }
+
+  .wed { background: #fff; border: 1px solid #e3dccf; border-left: 6px solid #b8975a; border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+  .wed.archived { border-left-color: #aaa; } .wed.unpub { border-left-color: #c77d14; }
+  .wed .r1 { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .wed .nm { font-weight: 700; font-size: 19px; }
+  .wed .addr { font-size: 14px; color: #7a756b; overflow-wrap: anywhere; }
+  .wed .d { font-size: 15px; color: #5e5a52; margin-top: 6px; }
+  .pill { display: inline-block; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .pill.live { background: #e5f4ea; color: #136b39; } .pill.unpub { background: #fff3df; color: #8a5a00; } .pill.archived { background: #eee; color: #555; }
+  .bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 8px; display: flex; }
+  .bar i { display: block; height: 100%; }
+  .wed .acts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .wed .acts > * { font-size: 15px; min-height: 46px; padding: 8px 4px; }
+  .linkrow { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; }
+  .linkrow code { flex: 1; min-width: 0; overflow-wrap: anywhere; background: #f3efe8; padding: 10px; border-radius: 10px; font-size: 14px; }
+  .linkrow button { flex: none; min-height: 44px; font-size: 15px; padding: 8px 12px; }
+  .slughint { font-size: 14px; color: #5e5a52; margin-top: 4px; overflow-wrap: anywhere; }
+  .slughint b { color: #2b2b2b; }
+
+  .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (min-width: 700px) { .filters { grid-template-columns: 1.3fr 1fr 1fr 1.5fr; } }
+  .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 12px; border: 1px solid #e6e0d6; border-radius: 12px; background: #fff; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th { text-align: left; color: #7a756b; font-weight: 600; font-size: 13px; padding: 8px; border-bottom: 1px solid #e6e0d6; white-space: nowrap; position: sticky; top: 0; background: #fff; }
+  td { padding: 8px; border-bottom: 1px solid #f0eae0; vertical-align: top; }
+  td.nw { white-space: nowrap; }
+  td a { display: inline-block; min-height: 44px; padding: 10px 0; }
+  .dirty { color: #8a5a00; font-weight: 600; font-size: 15px; margin: 8px 0 0; }
+  .yes { color: #136b39; font-weight: 700; } .no { color: #9a2d2d; font-weight: 700; }
+  .issue { border-top: 1px solid #eee; padding: 10px 0; }
+  .issue .k { font-size: 13px; font-weight: 700; color: #8a5a00; text-transform: uppercase; letter-spacing: .04em; }
+  .bk { border-top: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+  .bk .d { font-size: 14px; color: #5e5a52; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(30,25,18,.55); z-index: 100; display: flex; align-items: flex-end; justify-content: center; padding: 10px; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+  @media (min-width: 600px) { .overlay { align-items: center; } }
+  .modal { background: #fff; border-radius: 18px; width: 100%; max-width: 560px; max-height: calc(100% - 10px); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 18px 18px; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+  .modal.danger { border-top: 8px solid #b3261e; }
+  .modal h2 { font-size: 21px; margin: 0 0 10px; padding-right: 36px; position: relative; display: block; }
+  .modal .x { position: absolute; right: -6px; top: -8px; background: none; border: 0; color: #4a3f2f; font-size: 28px; min-height: 44px; width: 44px; padding: 0; }
+  .modal .mbody { font-size: 17px; line-height: 1.5; }
+  .modal .mbody p { margin: 0 0 12px; }
+  .modal .mbtns { display: grid; gap: 10px; margin-top: 18px; }
+  ul.plain { margin: 6px 0; padding-left: 20px; } ul.plain li { margin: 3px 0; }
+  #toast { position: fixed; left: 10px; right: 10px; bottom: max(14px, env(safe-area-inset-bottom)); z-index: 200; display: flex; justify-content: center; pointer-events: none; }
+  #toast div { max-width: 520px; width: 100%; background: #1d1a15; color: #fff; padding: 16px 18px; border-radius: 14px; font-size: 18px; font-weight: 600; box-shadow: 0 6px 24px rgba(0,0,0,.3); line-height: 1.35; }
+  #toast div.ok { background: #136b39; } #toast div.bad { background: #9a2d2d; }
+  #toast small { display: block; font-weight: 400; font-size: 15px; opacity: .92; margin-top: 3px; }
+</style>
+</head>
+<body>
+<header class="top"><h1>WEDDING <b>GUESTS</b> · Manage</h1><div class="who" id="who" hidden>Owner<br><button id="logout" type="button">Log out</button></div></header>
+
+<p id="booting" class="muted" style="text-align:center;margin:60px 0">Loading…</p>
+
+<main id="login" hidden>
+  <section class="box" style="max-width:420px;margin:40px auto">
+    <h2>Owner login</h2>
+    <p class="help">Type the owner password. You only do this once on this phone or computer.</p>
+    <form id="loginForm">
+      <label class="f" for="pw" style="margin-top:0">Password</label>
+      <input type="password" id="pw" autocomplete="current-password" placeholder="Owner password">
+      <button type="submit" class="full big" style="margin-top:12px">Open</button>
+      <p class="err" id="loginErr" hidden></p>
+    </form>
+  </section>
+</main>
+
+<main id="app" hidden>
+  <div class="tabbar">
+    <div class="tabs" id="tabs">
+      <button type="button" data-v="weddings">Weddings</button>
+      <button type="button" data-v="data">Data</button>
+      <button type="button" data-v="check">Check</button>
+      <button type="button" data-v="backups">Backups</button>
+    </div>
+  </div>
+  <div class="health" id="health"></div>
+  <p class="note bad" id="loadErr" hidden></p>
+
+  <!-- WEDDINGS -->
+  <div id="v-weddings">
+    <div class="row">
+      <div>
+        <section class="box"><h2>Weddings <small id="wCount"></small></h2>
+          <button type="button" class="green full" id="goNew" style="margin:4px 0 12px">+ New wedding</button>
+          <div id="wList"><p class="muted">Loading…</p></div>
+        </section>
+      </div>
+      <div>
+        <section class="box" id="newBox"><h2>+ New wedding</h2>
+          <form id="newForm" autocomplete="off">
+            <div class="two">
+              <div><label class="f" for="nGroom" style="margin-top:0">Groom's first name</label><input type="text" id="nGroom" placeholder="Ali" dir="auto"></div>
+              <div><label class="f" for="nBride" style="margin-top:0">Bride's first name</label><input type="text" id="nBride" placeholder="Nour" dir="auto"></div>
+            </div>
+            <label class="f" for="nSlug">The wedding's address</label>
+            <input type="text" id="nSlug" placeholder="ali-and-nour" autocapitalize="off" spellcheck="false">
+            <div class="slughint" id="nSlugHint"></div>
+            <div class="two">
+              <div><label class="f" for="nDate">Wedding day</label><input type="date" id="nDate"></div>
+              <div><label class="f" for="nTime">Time</label><input type="time" id="nTime" value="19:00"></div>
+            </div>
+            <label class="f" for="nTz">Time zone (where the wedding is)</label>
+            <select id="nTz"></select>
+            <label class="f" for="nReply">Guests should answer before (optional; else 4 weeks before)</label>
+            <input type="date" id="nReply">
+            <label class="f" for="nPw">Helpers' password (already filled in: <b>wedding</b>; change it if you like)</label>
+            <input type="text" id="nPw" value="wedding" autocapitalize="off" spellcheck="false">
+            <label class="f" for="nFrom">Start from</label>
+            <select id="nFrom"><option value="">Karim &amp; Maya's design (the template)</option></select>
+            <label class="f" for="nNotes">Notes for you (optional, only you see them)</label>
+            <input type="text" id="nNotes" placeholder="Paid half, referred by a friend…">
+            <p class="err" id="nErr" hidden></p>
+            <button type="submit" class="full big green" style="margin-top:14px">Create wedding</button>
+            <p class="muted" style="font-size:14px;margin:8px 0 0">Takes a few seconds. Nothing is sent to anyone. The new invitation starts with the names and date filled in; the parents, venue and gift are empty and <b>the gift page is switched off</b>. Guests see nothing new until you <b>Publish</b> the design.</p>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA -->
+  <div id="v-data" hidden>
+    <section class="box"><h2>All guests <small id="dCount"></small></h2>
+      <p class="help">Every family of every live wedding. Choose filters, then download it as Excel if you like.</p>
+      <div class="filters">
+        <select id="dWed" aria-label="Wedding"><option value="">All weddings</option></select>
+        <select id="dSide" aria-label="Side"><option value="">Both sides</option><option value="a">Groom's side</option><option value="b">Bride's side</option></select>
+        <select id="dStatus" aria-label="Status"><option value="">Everyone</option><option value="not_sent">Not sent yet</option><option value="sent">Sent</option><option value="opened">Opened</option><option value="answered">Answered</option><option value="coming">Coming</option><option value="not_coming">Not coming</option></select>
+        <input type="search" id="dQ" placeholder="Search a family or wedding…">
+      </div>
+      <button type="button" class="secondary full" id="dDownload" style="margin-top:10px">Download Excel</button>
+      <div class="tablewrap"><table><thead><tr><th>Wedding</th><th>Family</th><th>Side</th><th>Seats</th><th>Sent</th><th>Opened</th><th>Answer</th><th>Names</th><th>Note</th></tr></thead><tbody id="dRows"><tr><td colspan="9" class="muted">Loading…</td></tr></tbody></table></div>
+    </section>
+  </div>
+
+  <!-- CHECK -->
+  <div id="v-check" hidden>
+    <section class="box"><h2>Check for mistakes</h2>
+      <p class="help">Looks for things that are easy to miss: the same family twice, more guests than seats, invites sent long ago and never opened, late answers, wrong-looking phone numbers, weddings coming up with no helper active, designs never published.</p>
+      <div class="two"><select id="cWed" aria-label="Wedding"><option value="">All weddings</option></select><button type="button" id="cRun">Check now</button></div>
+      <div id="cOut" style="margin-top:12px"></div>
+    </section>
+  </div>
+
+  <!-- BACKUPS -->
+  <div id="v-backups" hidden>
+    <section class="box"><h2>Backups</h2>
+      <p class="help">The website makes a copy of every wedding every night at 03:00 (UTC). Nightly copies are kept 90 days, the first of each month and every copy you make by hand are kept for ever, and a copy is taken when a wedding is archived. If the GitHub copy is set up (docs/BACKUPS.md), every backup is also written there. Pictures are kept separately and are not inside backups.</p>
+      <button type="button" class="full" id="bNow">Make a backup now</button>
+      <div id="bList" style="margin-top:12px"><p class="muted">Loading…</p></div>
+    </section>
+  </div>
+</main>
+
+<div id="toast" hidden></div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ORIGIN = location.origin;
+const S = { view: "weddings", weddings: [], rows: [], passwords: {} };
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+function when(iso) {
+  if (!iso) return "";
+  const d = new Date(iso); if (isNaN(d)) return "";
+  let h = d.getHours(); const ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12;
+  return `${d.getDate()} ${MON[d.getMonth()]} ${h}:${String(d.getMinutes()).padStart(2, "0")}${ap}`;
+}
+function ago(iso) {
+  const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return "a moment ago";
+  if (s < 3600) { const m = Math.round(s / 60); return `${m} minute${m === 1 ? "" : "s"} ago`; }
+  if (s < 86400) { const h = Math.round(s / 3600); return `${h} hour${h === 1 ? "" : "s"} ago`; }
+  return "on " + when(iso);
+}
+const dayName = (ymd) => { const d = new Date(ymd + "T12:00:00"); return isNaN(d) ? ymd : `${DAYS[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`; };
+const daysTo = (iso) => Math.ceil((new Date(iso).getTime() - Date.now()) / 86400000);
+const couple = (w) => `${w.groom} & ${w.bride}`;
+const ACT = { login: "logged in", invite_sent: "sent an invite", reminder_sent: "sent a reminder", family_added: "added a family", family_edited: "edited a family",
+  contact_edited: "changed contact details", family_removed: "removed a family", upload: "added families from Excel", message_saved: "changed a message", opened: "opened an invite",
+  answered: "answered", invite_saved: "saved the design", invite_published: "published the design", password_changed: "changed the password", wedding_created: "set up the wedding",
+  archived: "archived it", unarchived: "took it out of the archive", reset_all: "reset all tracking", reset_family: "reset a family" };
+
+async function api(method, action, body, query = "") {
+  let r;
+  try {
+    r = await fetch("/api/manage/" + action + query, { method, credentials: "same-origin", headers: body ? { "content-type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined });
+  } catch { throw Object.assign(new Error("Could not reach the website. Check your internet and try again."), { network: true }); }
+  if (r.status === 401 && action !== "login") { showLogin(); throw Object.assign(new Error("Please log in again."), { status: 401 }); }
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(data.error || "Something went wrong on the website. Please try again in a minute."), { status: r.status, data });
+  return data;
+}
+
+/* ---------------- toast + modals (same as the admin page) ---------------- */
+let toastTimer;
+function toast(text, kind = "", sub = "") {
+  const t = $("toast");
+  t.innerHTML = `<div class="${kind}">${esc(text)}${sub ? `<small>${esc(sub)}</small>` : ""}</div>`;
+  t.hidden = false; clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, kind === "bad" ? 6000 : 4500);
+}
+const modals = [];
+const GUARD = 400;
+let guardUntil = 0;
+document.addEventListener("click", (e) => {
+  if (!e.isTrusted) return;   // clicks made by code (e.g. the hidden download link) are never stray taps
+  const ov = e.target.closest && e.target.closest(".overlay");
+  const act = ov && e.target.closest(".mbtns button, .x");
+  const tooSoon = ov ? !!act && !ov._typed && Date.now() - (ov._openedAt || 0) < GUARD : Date.now() < guardUntil;
+  if (ov && !act && !tooSoon && e.target.closest("button, input, textarea, label, select")) ov._typed = true;
+  if (tooSoon && e.target !== document.body) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
+}, true);
+let histEntry = false, ignorePop = false, histTimer = 0;
+try { history.scrollRestoration = "manual"; } catch {}
+const pushModalEntry = () => { if (histEntry) return; try { history.pushState({ wmodal: 1 }, ""); histEntry = true; } catch {} };
+window.addEventListener("popstate", () => {
+  histEntry = false;
+  if (ignorePop) { ignorePop = false; if (modals.length) pushModalEntry(); return; }
+  if (modals.length) { modals[modals.length - 1]._dismiss(); if (modals.length) pushModalEntry(); }
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modals.length) modals[modals.length - 1]._dismiss(); });
+function closeAllModals() { while (modals.length) modals[modals.length - 1]._dismiss(); }
+function modal({ title, body = "", buttons = [], danger = false, noX = false, onDismiss = null }) {
+  $("toast").hidden = true;
+  const ov = document.createElement("div");
+  ov.className = "overlay"; ov._openedAt = Date.now();
+  const box = document.createElement("div");
+  box.className = "modal" + (danger ? " danger" : "");
+  box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+  box.innerHTML = `<h2>${esc(title)}${noX ? "" : `<button type="button" class="x" aria-label="Close">×</button>`}</h2><div class="mbody"></div><div class="mbtns"></div>`;
+  const mb = box.querySelector(".mbody");
+  if (typeof body === "string") mb.innerHTML = body; else mb.append(body);
+  let closed = false;
+  const close = () => {
+    if (closed) return; closed = true;
+    ov.remove(); const i = modals.indexOf(ov); if (i >= 0) modals.splice(i, 1);
+    guardUntil = Date.now() + GUARD;
+    if (!modals.length) {
+      document.body.classList.remove("modal-open");
+      clearTimeout(histTimer);
+      histTimer = setTimeout(() => { if (!modals.length && histEntry) { ignorePop = true; try { history.back(); } catch { ignorePop = false; } } }, GUARD + 50);
+    }
+  };
+  ov._dismiss = () => { if (closed) return; close(); if (onDismiss) onDismiss(); };
+  const mbtns = box.querySelector(".mbtns");
+  let fired = false;
+  buttons.forEach((b) => {
+    const el = document.createElement("button");
+    el.type = "button"; el.className = (b.cls || "") + " full"; el.textContent = b.label;
+    if (b.id) el.id = b.id;
+    if (b.delay || b.disabled) { el.disabled = true; if (b.delay && !b.disabled) setTimeout(() => { el.disabled = false; }, GUARD); }
+    el.onclick = () => {
+      if (closed || el.disabled || (fired && !b.keep)) return;
+      if (!b.keep) fired = true;
+      const r = b.onClick ? b.onClick(close, box, el) : undefined;
+      if (r === false) fired = false; else if (!b.keep) close();
+    };
+    mbtns.append(el);
+  });
+  if (!noX) box.querySelector(".x").onclick = () => ov._dismiss();
+  ov.append(box);
+  document.body.append(ov); document.body.classList.add("modal-open");
+  modals.push(ov);
+  pushModalEntry();
+  ov.addEventListener("input", () => { ov._typed = true; });
+  return { box, close, dismiss: ov._dismiss };
+}
+const info = (title, html, label = "OK") => modal({ title, body: html, buttons: [{ label }] });
+function legacyCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
+  document.body.append(ta);
+  let ok = false;
+  try { ta.select(); ta.setSelectionRange(0, text.length); ok = document.execCommand("copy"); } catch { ok = false; }
+  ta.remove(); return ok;
+}
+function copyText(text, okMsg = "Copied") {
+  const done = () => toast(okMsg, "ok"), fail = () => { const b = document.createElement("div"); b.innerHTML = `<p>Press and hold in the box, choose Select All, then Copy.</p><textarea rows="8" readonly></textarea>`; b.querySelector("textarea").value = text; modal({ title: "Copy the text", body: b, buttons: [{ label: "Done" }] }); };
+  if (navigator.clipboard && window.isSecureContext) { try { navigator.clipboard.writeText(text).then(done, () => (legacyCopy(text) ? done() : fail())); return; } catch {} }
+  legacyCopy(text) ? done() : fail();
+}
+function downloadJSON(obj, name) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" }));
+  a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+/* ---------------- login ---------------- */
+function showLogin() { $("booting").hidden = true; closeAllModals(); $("app").hidden = true; $("who").hidden = true; $("login").hidden = false; }
+function showApp() { $("booting").hidden = true; $("login").hidden = true; $("app").hidden = false; $("who").hidden = false; }
+$("loginForm").onsubmit = async (e) => {
+  e.preventDefault(); $("loginErr").hidden = true;
+  try { await api("POST", "login", { password: $("pw").value }); $("pw").value = ""; showApp(); start(); }
+  catch (err) {
+    $("loginErr").textContent = err.data?.code === "owner_password_missing"
+      ? "Netlify does not have your owner password yet. On Netlify, open Environment variables and add one named OWNER_PASSWORD, in CAPITAL letters with the underscore. Then Deploys → Trigger deploy, wait for Published, and try again."
+      : err.status === 401 ? (err.data?.error || "That password is not right.") + " Check capital letters. If you just changed it on Netlify, it only works after Deploys → Trigger deploy has finished."
+      : err.data?.error || err.message;
+    $("loginErr").hidden = false;
+  }
+};
+$("logout").onclick = () => modal({ title: "Log out?", body: "<p>You will need the owner password to come back in.</p>", buttons: [
+  { label: "Yes, log out", onClick: () => { api("POST", "logout").catch(() => {}); showLogin(); } }, { label: "Stay", cls: "secondary" }] });
+
+/* ---------------- views ---------------- */
+function paintNav() {
+  [...$("tabs").children].forEach((b) => b.classList.toggle("on", b.dataset.v === S.view));
+  ["weddings", "data", "check", "backups"].forEach((v) => { $("v-" + v).hidden = S.view !== v; });
+}
+$("tabs").onclick = (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  S.view = b.dataset.v; try { history.replaceState(null, "", "#" + S.view); } catch {}
+  paintNav(); window.scrollTo(0, 0);
+  if (S.view === "data") loadData();
+  if (S.view === "backups") loadBackups();
+};
+
+async function loadHealth() {
+  try {
+    const h = await api("GET", "health");
+    // The copy on GitHub: not set up (grey, with where to read how), working (green), or a plain-words problem (orange).
+    const githubLine = (g) => !g ? "" : !g.configured ? `<span class="warn">No copy on GitHub yet (see docs/BACKUPS.md)</span>`
+      : g.last_error ? `<span class="warn">Copy on GitHub: ${esc(g.last_error)}</span>`
+      : g.last_ok_at ? `<span>Copy on GitHub ${esc(ago(g.last_ok_at))}</span>` : `<span class="warn">Copy on GitHub: not made yet (tap Make a backup now)</span>`;
+    const lb = h.last_backup;
+    const lbOld = !lb || Date.now() - new Date(lb.at).getTime() > 36 * 3600000;
+    $("health").innerHTML = `<span class="${h.db_ok ? "" : "bad"}">${h.db_ok ? "Database OK" : "Database not answering"}</span>` +
+      `<span class="${lb && !lb.ok ? "bad" : !lb || lbOld ? "warn" : ""}">${lb ? (lb.ok ? `Last backup ${esc(ago(lb.at))}` : `Last backup FAILED ${esc(ago(lb.at))} (open Backups, tap Make a backup now)`) : "No backup yet (the first one is made tonight)"}</span>` +
+      `<span>${h.weddings} ${h.weddings === 1 ? "wedding" : "weddings"}, ${h.families} families</span>` + (h.version ? `<span>Version ${esc(h.version)}</span>` : "") +
+      githubLine(h.github_backup);
+  } catch (e) { if (e.status !== 401) $("health").innerHTML = `<span class="bad">Could not check the website: ${esc(e.message)}</span>`; }
+}
+
+/* ---------------- weddings ---------------- */
+async function loadWeddings() {
+  try {
+    const d = await api("GET", "weddings");
+    S.weddings = d.weddings || [];
+    $("loadErr").hidden = true;
+    renderWeddings(); fillWeddingSelects();
+  } catch (e) { if (e.status !== 401) { $("loadErr").textContent = "Could not load the weddings: " + e.message; $("loadErr").hidden = false; } }
+}
+const slash = (u) => (u.endsWith("/") ? u : u + "/");   // wedding links always end with "/"
+const adminUrl = (w) => slash((w.links && w.links.admin) || `${ORIGIN}/${w.slug}/admin/`);
+const inviteBase = (w) => slash((w.links && w.links.invite_base) || `${ORIGIN}/${w.slug}/`);
+function statusOf(w) { return w.status === "archived" ? ["archived", "Archived"] : !w.published_at ? ["unpub", "Design not published"] : ["live", "Live"]; }
+function renderWeddings() {
+  const ws = S.weddings;
+  $("wCount").textContent = ws.length ? `${ws.length} in total · ${ws.filter((w) => w.status !== "archived").length} live` : "";
+  if (!ws.length) { $("wList").innerHTML = `<p class="note info">No weddings yet. Tap <b>+ New wedding</b> just above to make the first one.</p>`; return; }
+  $("wList").innerHTML = ws.map((w) => {
+    const c = w.counts || {}, [cls, label] = statusOf(w), n = daysTo(w.event_at);
+    const pct = (x) => (c.families ? Math.round((x / c.families) * 100) : 0);
+    const la = w.last_activity;
+    return `<div class="wed ${cls}" data-slug="${esc(w.slug)}">
+      <div class="r1"><div><div class="nm" dir="auto">${esc(couple(w))}</div><div class="addr">${esc(inviteBase(w).replace(/^https?:\/\//, ""))}</div></div><span class="pill ${cls}">${esc(label)}</span></div>
+      <div class="d">${esc(w.event_date ? dayName(w.event_date) : when(w.event_at))}${w.event_time ? " · " + esc(w.event_time) : ""} · ${n > 1 ? `in ${n} days` : n === 1 ? "tomorrow" : n === 0 ? "today" : "done"}</div>
+      <div class="d"><b>${c.families || 0}</b> families · <b>${c.sent || 0}</b> sent · <b>${c.opened || 0}</b> opened · <b>${c.answered || 0}</b> answered · <b class="yes">${c.guests_coming || 0}</b> guests coming of ${c.seats || 0} seats</div>
+      <div class="bar" title="answered / opened / sent"><i style="width:${pct(c.answered || 0)}%;background:#1a8a4a"></i><i style="width:${Math.max(0, pct(c.opened || 0) - pct(c.answered || 0))}%;background:#7fb38f"></i><i style="width:${Math.max(0, pct(c.sent || 0) - pct(c.opened || 0))}%;background:#d9cba8"></i></div>
+      <div class="d">${la ? `Last: ${esc(la.by || "Someone")} ${esc(ACT[la.action] || "did something")} ${esc(ago(la.at))}` : "Nothing happened yet"}</div>
+      ${w.notes ? `<div class="d" dir="auto">Note: ${esc(w.notes)}</div>` : ""}
+      <div class="acts"><a class="btn secondary" href="${esc(adminUrl(w))}" target="_blank" rel="noopener">Open admin</a><a class="btn secondary" href="${esc(adminUrl(w))}#design" target="_blank" rel="noopener">Design</a><button type="button" data-detail="${esc(w.slug)}">Details</button></div>
+    </div>`;
+  }).join("");
+}
+$("goNew").onclick = () => { $("newBox").scrollIntoView({ behavior: "smooth", block: "start" }); setTimeout(() => $("nGroom").focus(), 400); };
+$("wList").addEventListener("click", (e) => { const b = e.target.closest("[data-detail]"); if (b) openDetail(b.dataset.detail); });
+function fillWeddingSelects() {
+  const opts = S.weddings.map((w) => `<option value="${esc(w.slug)}">${esc(couple(w))}${w.status === "archived" ? " (archived)" : ""}</option>`).join("");
+  ["dWed", "cWed"].forEach((id) => { const s = $(id), cur = s.value; s.innerHTML = `<option value="">All weddings</option>` + opts; s.value = cur; });
+  const nf = $("nFrom"), cur = nf.value;
+  nf.innerHTML = `<option value="">Karim &amp; Maya's design (the template)</option>` + S.weddings.map((w) => `<option value="${esc(w.slug)}">Copy the design of ${esc(couple(w))}</option>`).join("");
+  nf.value = cur;
+}
+
+function coupleMessage(w, password) {
+  return `Hello ${w.groom} & ${w.bride}! Your wedding invitation page is ready.\n\n` +
+    `Helpers' page (for the family and friends who send the invites):\n${adminUrl(w)}\n` +
+    `Password: ${password || "(I will send it to you)"}\n\n` +
+    `Each helper opens it on their phone, types their first name and the password, then taps COPY INVITE next to each family and pastes it in WhatsApp. Every family gets its own link; you never type links.\n\n` +
+    `To see the invitation as a guest: ${inviteBase(w)}?demo=1`;
+}
+function askPasswordThenCopy(w) {
+  const known = S.passwords[w.slug];
+  if (known) return copyText(coupleMessage(w, known), "Copied. Paste it in WhatsApp.");
+  const b = document.createElement("div");
+  b.innerHTML = `<p>Which password should be in the message? (This page does not keep passwords.) Leave it empty to write it yourself.</p><input type="text" id="cpPw" autocapitalize="off" spellcheck="false" placeholder="Helpers' password">`;
+  modal({ title: "Copy as a WhatsApp message", body: b, buttons: [
+    { label: "Copy the message", cls: "green", onClick: (c, box) => { copyText(coupleMessage(w, box.querySelector("#cpPw").value.trim()), "Copied. Paste it in WhatsApp."); } },
+    { label: "Cancel", cls: "secondary" }] });
+}
+
+function openDetail(slug) {
+  const w = S.weddings.find((x) => x.slug === slug); if (!w) return;
+  const [, label] = statusOf(w);
+  const b = document.createElement("div");
+  b.innerHTML = `
+    <p class="muted" style="margin-top:-4px">${esc(label)} · ${esc(w.event_date ? dayName(w.event_date) : when(w.event_at))}</p>
+    <h3 style="margin-top:6px">Links to send the couple</h3>
+    <label class="f">Helpers' page</label><div class="linkrow"><code>${esc(adminUrl(w))}</code><button type="button" class="secondary" data-c="admin">Copy</button></div>
+    <label class="f">Guests' links look like this (made automatically)</label><div class="linkrow"><code>${esc(inviteBase(w))}?t=…</code></div>
+    <label class="f">See the invite as a guest</label><div class="linkrow"><code>${esc(inviteBase(w))}?demo=1</code><a class="btn secondary small" href="${esc(inviteBase(w))}?demo=1" target="_blank" rel="noopener">Open</a></div>
+    <button type="button" class="green full" data-c="wa">Copy as a WhatsApp message for the couple</button>
+    <h3>Details</h3>
+    <div class="two"><div><label class="f">Groom</label><input type="text" id="eGroom" value="${esc(w.groom)}" dir="auto"></div><div><label class="f">Bride</label><input type="text" id="eBride" value="${esc(w.bride)}" dir="auto"></div></div>
+    <div class="two"><div><label class="f">Wedding day</label><input type="date" id="eDate" value="${esc(w.event_date || "")}"></div><div><label class="f">Time</label><input type="time" id="eTime" value="${esc(w.event_time || "")}"></div></div>
+    <label class="f">Time zone</label><select id="eTz">${tzOptions(w.timezone)}</select>
+    <label class="f">Answer before</label><input type="date" id="eReply" value="${esc(w.reply_by || "")}">
+    <label class="f">Notes for you</label><input type="text" id="eNotes" value="${esc(w.notes || "")}" dir="auto">
+    <p class="muted" style="font-size:14px">Changing the names or the date also changes them on the invite (draft and published).</p>
+    <p class="dirty" id="eDirty" hidden>Not saved yet: tap Save the details.</p>
+    <button type="button" class="full" data-c="save">Save the details</button>
+    <h3>Helpers' password</h3>
+    <p class="muted" style="font-size:14px;margin:0 0 6px">Typing here does nothing until you tap <b>Set password</b>. This page does not show the current password.</p>
+    <div class="two"><input type="text" id="ePw" placeholder="New password" autocapitalize="off" spellcheck="false"><button type="button" class="secondary" data-c="pw">Set password</button></div>
+    <h3>Keep or remove</h3>
+    <div style="display:grid;gap:8px">
+      <button type="button" class="secondary full" data-c="export">Download a copy of everything</button>
+      ${w.status === "archived" ? `<button type="button" class="secondary full" data-c="unarchive">Take out of the archive</button>` : `<button type="button" class="secondary full" data-c="archive">Archive (after the wedding)</button>`}
+      <button type="button" class="red-outline full" data-c="delete">Delete this wedding</button>
+    </div>`;
+  const changed = () => [["eGroom", w.groom], ["eBride", w.bride], ["eDate", w.event_date || ""], ["eTime", w.event_time || ""], ["eTz", w.timezone], ["eReply", w.reply_by || ""], ["eNotes", w.notes || ""]]
+    .some(([id, was]) => b.querySelector("#" + id).value.trim() !== String(was || "").trim()) || !!b.querySelector("#ePw").value.trim();
+  b.addEventListener("input", () => { b.querySelector("#eDirty").hidden = !changed(); });
+  b.addEventListener("change", () => { b.querySelector("#eDirty").hidden = !changed(); });
+  const m = modal({ title: couple(w), body: b, buttons: [{ label: "Close", cls: "secondary", onClick: (close) => {
+    if (!changed()) return;
+    modal({ title: "Close without saving?", body: "<p>You typed changes here (details or a new password) but did not tap <b>Save the details</b> or <b>Set password</b>. They are not saved.</p>", buttons: [
+      { label: "Close without saving", cls: "red", onClick: () => close() }, { label: "No, go back", cls: "secondary" }] });
+    return false;
+  } }] });
+  b.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-c]"); if (!t) return;
+    const c = t.dataset.c;
+    if (c === "admin") copyText(adminUrl(w));
+    if (c === "wa") askPasswordThenCopy(w);
+    if (c === "save") saveDetails(w, b, m);
+    if (c === "pw") setPassword(w, b);
+    if (c === "export") exportWedding(w);
+    if (c === "archive") archive(w, m);
+    if (c === "unarchive") unarchive(w, m);
+    if (c === "delete") deleteWedding(w, m);
+  });
+}
+async function saveDetails(w, b, m) {
+  const v = (id) => b.querySelector("#" + id).value.trim();
+  const body = { slug: w.slug };
+  if (v("eGroom") !== w.groom) body.groom = v("eGroom");
+  if (v("eBride") !== w.bride) body.bride = v("eBride");
+  if (v("eDate") !== (w.event_date || "")) body.event_date = v("eDate");
+  if (v("eTime") !== (w.event_time || "")) body.event_time = v("eTime");
+  if (v("eTz") !== w.timezone) body.timezone = v("eTz");
+  if (v("eReply") !== (w.reply_by || "")) body.reply_by = v("eReply");
+  if (v("eNotes") !== (w.notes || "")) body.notes = v("eNotes");
+  if (Object.keys(body).length === 1) return toast("Nothing changed.");
+  if ((body.groom !== undefined && !body.groom) || (body.bride !== undefined && !body.bride)) return toast("The names cannot be empty.", "bad");
+  try { await api("POST", "update", body); toast("Saved", "ok"); m.close(); await loadWeddings(); openDetail(w.slug); }
+  catch (e) { if (e.status !== 401) toast(e.message, "bad"); }
+}
+function setPassword(w, b) {
+  const pw = b.querySelector("#ePw").value.trim();
+  if (pw.length < 4) return toast("The password needs at least 4 letters or numbers.", "bad");
+  modal({ title: "Set a new password?", body: `<p>Every helper of <b>${esc(couple(w))}</b> is logged out and needs the new password: <b>${esc(pw)}</b></p>`, buttons: [
+    { label: "Yes, set it", onClick: async () => {
+      try { await api("POST", "set-password", { slug: w.slug, password: pw }); S.passwords[w.slug] = pw; b.querySelector("#ePw").value = ""; toast("Password set", "ok", "Tell the couple the new password."); }
+      catch (e) { if (e.status !== 401) toast(e.message, "bad"); }
+    } }, { label: "No", cls: "secondary" }] });
+}
+async function exportWedding(w) {
+  try { const d = await api("GET", "export", null, "?slug=" + encodeURIComponent(w.slug)); downloadJSON(d, `${w.slug}-everything-${new Date().toISOString().slice(0, 10)}.json`); toast("Downloaded", "ok"); return true; }
+  catch (e) { if (e.status !== 401) toast(e.message, "bad"); return false; }
+}
+function archive(w, m) {
+  modal({ title: "Archive this wedding?", body: `<p><b>${esc(couple(w))}</b>: the invite shows a thank-you card, guests can no longer answer, and the helpers can look but not change anything.</p><p>Everything is kept. You can take it out of the archive later.</p>`, buttons: [
+    { label: "Yes, archive", cls: "", onClick: () => {
+      modal({ title: "Are you sure?", danger: true, body: `<p>Families who open their link will no longer see the answer form.</p>`, buttons: [
+        { label: "Archive the wedding", cls: "red", delay: true, onClick: async () => {
+          try { await api("POST", "archive", { slug: w.slug }); toast("Archived", "ok"); m.close(); loadWeddings(); } catch (e) { if (e.status !== 401) toast(e.message, "bad"); }
+        } }, { label: "No, keep it live", cls: "secondary" }] });
+    } }, { label: "No", cls: "secondary" }] });
+}
+function unarchive(w, m) {
+  modal({ title: "Take out of the archive?", body: `<p>The answer form comes back and helpers can change things again.</p>`, buttons: [
+    { label: "Yes, make it live again", onClick: async () => { try { await api("POST", "unarchive", { slug: w.slug }); toast("Live again", "ok"); m.close(); loadWeddings(); } catch (e) { if (e.status !== 401) toast(e.message, "bad"); } } },
+    { label: "No", cls: "secondary" }] });
+}
+function deleteWedding(w, m) {
+  const c = w.counts || {};
+  modal({ title: "Delete this wedding?", danger: true,
+    body: `<p>Delete <b>${esc(couple(w))}</b> for good: ${c.families || 0} families, ${c.answered || 0} answers, the messages, the design and the uploaded pictures.</p><p>A copy of everything is downloaded to this phone or computer first.</p><p>If the wedding is over, <b>Archive</b> is usually better.</p>`,
+    buttons: [{ label: "Continue", cls: "red", onClick: () => {
+      const b = document.createElement("div");
+      b.innerHTML = `<p>Type the wedding's address <b>${esc(w.slug)}</b> in the box to delete it.</p><input type="text" id="delWord" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(w.slug)}">`;
+      const m2 = modal({ title: "Are you really sure?", danger: true, body: b, buttons: [
+        { label: "Download a copy and delete", cls: "red", id: "delGo", disabled: true, onClick: async () => {
+          if (!(await exportWedding(w))) return toast("Nothing was deleted, because the copy could not be downloaded.", "bad");
+          try {
+            const d = await api("POST", "delete", { slug: w.slug, confirm: w.slug });
+            toast(`${couple(w)} deleted`, "ok", "The copy is in your Downloads.");
+            m.close(); loadWeddings(); loadHealth();
+            if (d && d.export && !d.export.families) {}
+          } catch (e) { if (e.status !== 401) toast(e.message, "bad"); }
+        } }, { label: "No, keep it", cls: "secondary" }] });
+      b.querySelector("#delWord").addEventListener("input", (e) => { m2.box.querySelector("#delGo").disabled = e.target.value.trim().toLowerCase() !== w.slug; });
+    } }, { label: "No, keep it", cls: "secondary" }] });
+}
+
+/* ---------------- new wedding ---------------- */
+const TZ = [["Asia/Beirut", "Beirut"], ["Asia/Dubai", "Dubai"], ["Asia/Riyadh", "Riyadh"], ["Asia/Qatar", "Doha"], ["Asia/Kuwait", "Kuwait"], ["Asia/Amman", "Amman"],
+  ["Asia/Damascus", "Damascus"], ["Africa/Cairo", "Cairo"], ["Europe/Istanbul", "Istanbul"], ["Europe/Athens", "Athens / Cyprus"], ["Europe/Paris", "Paris / Brussels"],
+  ["Europe/Berlin", "Berlin"], ["Europe/London", "London"], ["Africa/Abidjan", "Abidjan / Dakar"], ["Africa/Lagos", "Lagos"], ["America/New_York", "New York / Montreal"],
+  ["America/Toronto", "Toronto"], ["America/Chicago", "Chicago"], ["America/Los_Angeles", "Los Angeles"], ["America/Sao_Paulo", "São Paulo"], ["Australia/Sydney", "Sydney"]];
+function tzOptions(cur) { const has = TZ.some(([v]) => v === cur); return (cur && !has ? `<option value="${esc(cur)}" selected>${esc(cur)}</option>` : "") + TZ.map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${esc(l)}</option>`).join(""); }
+$("nTz").innerHTML = tzOptions("Asia/Beirut");
+const RESERVED = ["manage", "api", "app", "asset", "assets", "admin", "netlify", ".netlify"];
+const slugify = (s) => String(s || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").replace(/-{2,}/g, "-").slice(0, 40).replace(/-+$/, "");
+const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])?$/;
+let slugTouched = false;
+function suggestSlug() { if (slugTouched) return; const g = slugify($("nGroom").value), b = slugify($("nBride").value); $("nSlug").value = g && b ? `${g}-and-${b}` : g || b; paintSlug(); }
+function paintSlug() {
+  const s = $("nSlug").value.trim().toLowerCase(), h = $("nSlugHint");
+  if (!s) { h.innerHTML = "Letters, numbers and dashes, like <b>ali-and-nour</b>. This is the guests' link."; return; }
+  if (RESERVED.includes(s)) h.innerHTML = `<span class="err">"${esc(s)}" is kept for the website. Choose another.</span>`;
+  else if (!SLUG_RE.test(s)) h.innerHTML = `<span class="err">Only small letters (a–z), numbers and dashes, 3 to 40 long, not starting or ending with a dash.</span>`;
+  else if (S.weddings.some((w) => w.slug === s)) h.innerHTML = `<span class="err">There is already a wedding at this address.</span>`;
+  else h.innerHTML = `Guests' links: ${esc(ORIGIN.replace(/^https?:\/\//, ""))}/<b>${esc(s)}</b>/`;
+}
+$("nGroom").addEventListener("input", suggestSlug); $("nBride").addEventListener("input", suggestSlug);
+$("nSlug").addEventListener("input", () => { slugTouched = !!$("nSlug").value.trim(); paintSlug(); });
+paintSlug();
+$("newForm").onsubmit = (e) => {
+  e.preventDefault();
+  const err = $("nErr"), bad = (t) => { err.textContent = t; err.hidden = false; };
+  err.hidden = true;
+  const v = { groom: $("nGroom").value.trim(), bride: $("nBride").value.trim(), slug: $("nSlug").value.trim().toLowerCase(), event_date: $("nDate").value, event_time: $("nTime").value || "19:00",
+    timezone: $("nTz").value, password: $("nPw").value.trim() || "wedding" };
+  if ($("nReply").value) v.reply_by = $("nReply").value;
+  if ($("nFrom").value) v.copy_from_slug = $("nFrom").value;
+  if ($("nNotes").value.trim()) v.notes = $("nNotes").value.trim();
+  if (!v.groom || !v.bride) return bad("Please type both first names.");
+  if (!SLUG_RE.test(v.slug) || RESERVED.includes(v.slug)) return bad("Please fix the wedding's address (see the red line under it).");
+  if (S.weddings.some((w) => w.slug === v.slug)) return bad("There is already a wedding at this address. Change it a little.");
+  if (!v.event_date) return bad("Please choose the wedding day.");
+  if (v.password.length < 4) return bad("The password needs at least 4 letters or numbers.");
+  const from = v.copy_from_slug ? S.weddings.find((w) => w.slug === v.copy_from_slug) : null;
+  modal({ title: "Create this wedding?", body: `<p><b>${esc(v.groom)} &amp; ${esc(v.bride)}</b>, ${esc(dayName(v.event_date))} at ${esc(v.event_time)}.</p><p>Address: <b>${esc(v.slug)}</b> (cannot be changed later). Password: <b>${esc(v.password)}</b>. Design: ${from ? "a copy of " + esc(couple(from)) + "'s" : "Karim &amp; Maya's template"}.</p>`, buttons: [
+    { label: "Yes, create it", cls: "green", onClick: async () => {
+      try {
+        const d = await api("POST", "create", v);
+        S.passwords[v.slug] = (d.links && d.links.password) || v.password;
+        ["nGroom", "nBride", "nSlug", "nDate", "nReply", "nNotes"].forEach((id) => { $(id).value = ""; }); $("nPw").value = "wedding"; $("nFrom").value = ""; slugTouched = false; paintSlug();
+        await loadWeddings(); loadHealth();
+        const w = S.weddings.find((x) => x.slug === v.slug) || { ...d.wedding, links: d.links };
+        modal({ title: "Wedding created", body: `<p><b>${esc(couple(w))}</b> is ready. Next, in <b>Design</b>: fill in the parents, the place and the gift number; switch on <b>Show the gift page</b> if they want it (it starts off); then <b>Save draft</b> and <b>Publish</b>.</p>
+          <div class="linkrow"><code>${esc(adminUrl(w))}</code></div><p>Password: <b>${esc(S.passwords[v.slug])}</b></p>`, buttons: [
+          { label: "Copy as a WhatsApp message for the couple", cls: "green", keep: true, onClick: () => { copyText(coupleMessage(w, S.passwords[v.slug]), "Copied. Paste it in WhatsApp."); } },
+          { label: "Open its Design", cls: "", onClick: () => { window.open(adminUrl(w) + "#design", "_blank"); } },
+          { label: "Close", cls: "secondary" }] });
+      } catch (e2) { if (e2.status !== 401) bad(e2.message); }
+    } }, { label: "No, go back", cls: "secondary" }] });
+};
+
+/* ---------------- data ---------------- */
+let dataTimer = 0;
+let dataReq = 0;   // each request gets a number; an answer older than the latest request is ignored (fast filter changes)
+async function loadData() {
+  const qs = new URLSearchParams();
+  [["slug", "dWed"], ["side", "dSide"], ["status", "dStatus"], ["q", "dQ"]].forEach(([k, id]) => { const v = $(id).value.trim(); if (v) qs.set(k, v); });
+  const mine = ++dataReq;
+  try {
+    const d = await api("GET", "data", null, qs.toString() ? "?" + qs : "");
+    if (mine !== dataReq) return;
+    S.rows = d.rows || []; renderData();
+  } catch (e) { if (mine === dataReq && e.status !== 401) $("dRows").innerHTML = `<tr><td colspan="9" class="note bad">${esc(e.message)}</td></tr>`; }
+}
+["dWed", "dSide", "dStatus"].forEach((id) => $(id).addEventListener("change", loadData));
+$("dQ").addEventListener("input", () => { clearTimeout(dataTimer); dataTimer = setTimeout(loadData, 350); });
+const answerWord = (r) => (r.answer === "coming" ? `Coming, ${r.guests}` : r.answer === "not_coming" ? "Not coming" : "");
+function renderData() {
+  const rows = S.rows;
+  $("dCount").textContent = `${rows.length} ${rows.length === 1 ? "family" : "families"} · ${rows.reduce((a, r) => a + (r.answer === "coming" ? Number(r.guests) || 0 : 0), 0)} guests coming`;
+  $("dRows").innerHTML = rows.length ? rows.slice(0, 1500).map((r) => `<tr>
+    <td class="nw">${esc(r.wedding)}</td><td dir="auto"><a href="${esc(ORIGIN + "/" + r.slug + "/admin/")}" target="_blank" rel="noopener">${esc(r.family)}</a></td><td class="nw">${esc(r.side_name || r.side)}</td><td>${esc(r.seats)}</td>
+    <td class="nw">${r.sent_at ? esc(when(r.sent_at)) + (r.sent_by ? "<br><span class='muted'>" + esc(r.sent_by) + "</span>" : "") : "<span class='muted'>no</span>"}</td>
+    <td>${r.opened_count ? esc(r.opened_count) + "×" : ""}</td>
+    <td class="nw ${r.answer === "coming" ? "yes" : r.answer === "not_coming" ? "no" : ""}">${esc(answerWord(r))}${r.answered_at ? "<br><span class='muted' style='font-weight:400'>" + esc(when(r.answered_at)) + "</span>" : ""}</td>
+    <td dir="auto">${esc((r.guest_names || []).join(", "))}</td><td dir="auto">${esc(r.note || "")}</td></tr>`).join("") + (rows.length > 1500 ? `<tr><td colspan="9" class="muted">Showing 1500 of ${rows.length}. The Excel has them all.</td></tr>` : "")
+    : `<tr><td colspan="9" class="muted">Nobody matches these filters.</td></tr>`;
+}
+$("dDownload").onclick = () => {
+  if (typeof XLSX === "undefined") return toast("The Excel tool did not load. Check your internet and reload.", "bad");
+  const rows = S.rows.map((r) => ({ "Wedding": r.wedding, "Family": r.family, "Side": r.side_name || r.side, "Seats": r.seats, "Phone": r.phone || "", "E-mail": r.email || "",
+    "Sent": r.sent_at ? "Yes" : "No", "Sent by": r.sent_by || "", "Sent at": when(r.sent_at), "Times opened": r.opened_count || 0,
+    "Answer": r.answer === "coming" ? "Coming" : r.answer === "not_coming" ? "Not coming" : "", "Guests coming": r.answer === "coming" ? r.guests : r.answer ? 0 : "",
+    "Guest names": (r.guest_names || []).join(", "), "Note": r.note || "", "Answered at": when(r.answered_at), "Link": r.link || "" }));
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{ "Wedding": "" }]);
+  ws["!cols"] = [22, 30, 12, 6, 16, 24, 6, 12, 16, 8, 12, 8, 40, 30, 16, 40].map((w) => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, ws, "Guests");
+  const f = [$("dWed").value || "all-weddings", $("dSide").value ? ($("dSide").value === "a" ? "groom" : "bride") : "", $("dStatus").value].filter(Boolean).join("-");
+  XLSX.writeFile(wb, `guests-${f}-${new Date().toISOString().slice(0, 10)}.xlsx`);
+};
+
+/* ---------------- check ---------------- */
+const KIND_WORDS = { duplicate_name: "Same family twice?", over_capacity: "More guests than seats", never_opened: "Sent but never opened", late_answer: "Answered after the deadline",
+  bad_phone: "Phone number looks wrong", no_helpers: "Nobody is sending", not_published: "Design not published" };
+$("cRun").onclick = async () => {
+  $("cOut").innerHTML = `<p class="muted">Checking…</p>`;
+  try {
+    const slug = $("cWed").value;
+    const d = await api("GET", "check", null, slug ? "?slug=" + encodeURIComponent(slug) : "");
+    const issues = d.issues || [];
+    if (!issues.length) { $("cOut").innerHTML = `<p class="note ok">Nothing to fix. Everything looks right.</p>`; return; }
+    const by = new Map(); issues.forEach((i) => { if (!by.has(i.slug)) by.set(i.slug, []); by.get(i.slug).push(i); });
+    $("cOut").innerHTML = `<p class="note warn"><b>${issues.length}</b> ${issues.length === 1 ? "thing" : "things"} to look at.</p>` + [...by].map(([s, list]) => {
+      const w = S.weddings.find((x) => x.slug === s);
+      return `<h3>${esc(w ? couple(w) : s)}</h3>` + list.map((i) => `<div class="issue"><div class="k">${esc(KIND_WORDS[i.kind] || "Check")}</div><div dir="auto">${esc(i.text)}</div>
+        <a class="btn secondary small" style="margin-top:6px" target="_blank" rel="noopener" href="${esc(ORIGIN + "/" + s + "/admin/" + (i.token ? "#f=" + encodeURIComponent(i.token) : i.kind === "not_published" ? "#design" : ""))}">${i.token ? "Open this family in the admin" : i.kind === "not_published" ? "Open the Design" : "Open the admin"}</a></div>`).join("");
+    }).join("");
+  } catch (e) { if (e.status !== 401) $("cOut").innerHTML = `<p class="note bad">${esc(e.message)}</p>`; }
+};
+
+/* ---------------- backups ---------------- */
+async function loadBackups() {
+  try {
+    const d = await api("GET", "backups");
+    const bs = d.backups || [];
+    $("bList").innerHTML = bs.length ? bs.map((b) => `<div class="bk"><div><b>${esc(when(b.at))}</b>${b.kind === "manual" || /manual/.test(b.blob_key || "") ? " · made by hand" : ""}${b.kind === "before-restore" || /before-restore/.test(b.blob_key || "") ? " · safety copy before a restore" : ""}${b.kind === "archive" ? " · taken when the wedding was archived" : ""}${b.kept_forever ? " · kept for ever" : b.kept_until ? ` · kept until ${esc(when(b.kept_until))}` : ""}${b.github ? (b.github.ok ? " · copied to GitHub" : ` · <span class="err">GitHub copy failed</span>`) : ""}
+      <div class="d">${b.ok ? `${b.weddings} weddings, ${b.families} families, ${(b.bytes / 1024).toFixed(0)} KB` : `<span class="err">Failed: ${esc(b.error || "unknown problem")}</span>`}</div></div>
+      ${b.ok ? `<button type="button" class="secondary small" data-restore="${esc(b.blob_key)}" data-at="${esc(b.at)}">Restore…</button>` : ""}</div>`).join("") : `<p class="muted">No backups yet. The first one is made tonight, or tap <b>Make a backup now</b>.</p>`;
+  } catch (e) { if (e.status !== 401) $("bList").innerHTML = `<p class="note bad">${esc(e.message)}</p>`; }
+}
+$("bNow").onclick = async () => {
+  $("bNow").disabled = true;
+  try { const d = await api("POST", "backup-now", {}); toast(d.backup?.ok === false ? "The backup failed" : "Backup made", d.backup?.ok === false ? "bad" : "ok", d.backup?.error || ""); loadBackups(); loadHealth(); }
+  catch (e) { if (e.status !== 401) toast(e.message, "bad"); }
+  finally { $("bNow").disabled = false; }
+};
+$("bList").addEventListener("click", (e) => { const b = e.target.closest("[data-restore]"); if (b) restoreDialog(b.dataset.restore, b.dataset.at); });
+function restoreDialog(key, at) {
+  const b = document.createElement("div");
+  b.innerHTML = `<p>Bring back one wedding as it was on <b>${esc(when(at))}</b>.</p>
+    <label class="f">Which wedding (its address)</label>
+    <input type="text" id="rSlug" list="rSlugs" autocapitalize="off" spellcheck="false" placeholder="ali-and-nour"><datalist id="rSlugs">${S.weddings.map((w) => `<option value="${esc(w.slug)}">`).join("")}</datalist>
+    <label class="f">Put it back…</label>
+    <select id="rWhere"><option value="same">in its own place (replaces what it has now)</option><option value="new">as a new, separate wedding (nothing is replaced)</option></select>
+    <div id="rNewBox" hidden><label class="f">New address</label><input type="text" id="rInto" autocapitalize="off" spellcheck="false" placeholder="ali-and-nour-copy"></div>
+    <p class="err" id="rErr" hidden></p>`;
+  b.querySelector("#rWhere").onchange = (e) => { b.querySelector("#rNewBox").hidden = e.target.value !== "new"; };
+  modal({ title: "Restore from a backup", body: b, buttons: [
+    { label: "Show what would change", keep: true, onClick: (close, box, btn) => {
+      const slug = b.querySelector("#rSlug").value.trim().toLowerCase(), into = b.querySelector("#rWhere").value === "new" ? b.querySelector("#rInto").value.trim().toLowerCase() : "";
+      const err = b.querySelector("#rErr"); err.hidden = true;
+      if (!slug) { err.textContent = "Please type the wedding's address."; err.hidden = false; return; }
+      if (b.querySelector("#rWhere").value === "new" && !SLUG_RE.test(into)) { err.textContent = "Please type a new address (small letters, numbers and dashes)."; err.hidden = false; return; }
+      btn.disabled = true;
+      api("POST", "restore", { blob_key: key, slug, ...(into ? { into_slug: into } : {}), preview: true }).then((p) => { btn.disabled = false; close(); restorePreview(key, slug, into, p); })
+        .catch((e) => { btn.disabled = false; if (e.status !== 401) { err.textContent = e.data?.code === "not_found" ? "That wedding is not in this backup." : e.message; err.hidden = false; } });
+    } },
+    { label: "Cancel", cls: "secondary" }] });
+}
+function restorePreview(key, slug, into, p) {
+  const list = (arr) => (arr && arr.length ? `<ul class="plain">${arr.slice(0, 40).map((n) => `<li dir="auto">${esc(n)}</li>`).join("")}${arr.length > 40 ? `<li>…and ${arr.length - 40} more</li>` : ""}</ul>` : "");
+  const target = p.target || into || slug, cur = p.current;
+  const body = `<p>From the backup of <b>${esc(when(p.backup_at))}</b>: ${p.backup?.families ?? 0} families, ${p.backup?.sent ?? 0} sent, ${p.backup?.answered ?? 0} answers.</p>
+    ${p.exists && cur ? `<p>Now, <b>${esc(target)}</b> has ${cur.families} families, ${cur.sent} sent, ${cur.answered} answers. <b>All of it will be replaced.</b> A safety copy is made first.</p>` : `<p>It goes to a new wedding at <b>${esc(target)}</b>. Nothing else changes.</p>`}
+    ${p.will_add?.length ? `<p><b>${p.will_add.length}</b> ${p.will_add.length === 1 ? "family comes" : "families come"} back:</p>${list(p.will_add)}` : ""}
+    ${p.will_remove?.length ? `<p style="color:#9a2d2d"><b>${p.will_remove.length}</b> ${p.will_remove.length === 1 ? "family added since then disappears" : "families added since then disappear"}:</p>${list(p.will_remove)}` : ""}
+    ${p.answers_differ ? `<p style="color:#9a2d2d">Some answers are different now; they go back to how they were in the backup.</p>` : ""}
+    ${p.missing_pictures?.length ? `<p>${p.missing_pictures.length} uploaded ${p.missing_pictures.length === 1 ? "picture is" : "pictures are"} no longer on the website; the design will use the originals there.</p>` : ""}`;
+  modal({ title: "Restore: what would change", danger: !!p.exists, body, buttons: [
+    { label: p.exists ? "Continue" : "Restore it", cls: p.exists ? "red" : "green", onClick: () => {
+      const b = document.createElement("div");
+      b.innerHTML = p.exists ? `<p>Type <b>${esc(target)}</b> to replace what it has now with the backup.</p><input type="text" id="rWord" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(target)}">` : `<p>Make <b>${esc(target)}</b> from the backup?</p>`;
+      const m = modal({ title: "Are you really sure?", danger: !!p.exists, body: b, buttons: [
+        { label: "Restore now", cls: p.exists ? "red" : "green", id: "rGo", disabled: !!p.exists, delay: !p.exists, onClick: async () => {
+          try {
+            const r = await api("POST", "restore", { blob_key: key, slug, ...(into ? { into_slug: into } : {}), preview: false, ...(p.exists ? { confirm: target } : {}) });
+            info("Restored", `<p><b>${esc(r.target || target)}</b> is back as it was, with ${r.families ?? "its"} families.</p>${r.safety_backup ? "<p>A safety copy of what was there before is in the backup list.</p>" : ""}`);
+            loadWeddings(); loadBackups(); loadHealth();
+          } catch (e) { if (e.status !== 401) toast(e.message, "bad"); }
+        } }, { label: "No, leave everything", cls: "secondary" }] });
+      const w = b.querySelector("#rWord"); if (w) w.addEventListener("input", (e) => { m.box.querySelector("#rGo").disabled = e.target.value.trim().toLowerCase() !== target; });
+    } }, { label: "No, leave everything", cls: "secondary" }] });
+}
+
+/* ---------------- start ---------------- */
+function start() {
+  const h = location.hash.slice(1); if (["weddings", "data", "check", "backups"].includes(h)) S.view = h;
+  paintNav(); loadHealth(); loadWeddings();
+  if (S.view === "data") loadData();
+  if (S.view === "backups") loadBackups();
+}
+(async () => {
+  try { await api("GET", "me"); showApp(); start(); } catch { showLogin(); }
+  setInterval(() => { if (!$("app").hidden && !document.hidden && S.view === "weddings" && !modals.length) loadWeddings(); }, 60000);
+})();
+</script>
+</body>
+</html>

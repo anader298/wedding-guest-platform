@@ -1,0 +1,56 @@
+{
+  "owner_password": "owner",
+  "health": {
+    "ok": true,
+    "db_ok": true,
+    "version": "1.0.0-test",
+    "weddings": 3,
+    "families": 5,
+    "last_backup": {
+      "at": "2026-11-06T03:00:00.000Z",
+      "ok": true,
+      "blob_key": "2026-11-06/all.json",
+      "error": null
+    }
+  },
+  "backups": [
+    {
+      "id": 2,
+      "at": "2026-11-06T03:00:00.000Z",
+      "blob_key": "2026-11-06/all.json",
+      "weddings": 3,
+      "families": 5,
+      "bytes": 48211,
+      "ok": true,
+      "error": null
+    },
+    {
+      "id": 1,
+      "at": "2026-11-05T03:00:00.000Z",
+      "blob_key": "2026-11-05/all.json",
+      "weddings": 3,
+      "families": 4,
+      "bytes": 40120,
+      "ok": true,
+      "error": null
+    }
+  ],
+  "check": {
+    "issues": [
+      {
+        "slug": "karim-and-maya",
+        "family": "عائلة أبو سمير",
+        "token": "TOKABOUKH2",
+        "kind": "never_opened",
+        "text": "عائلة أبو سمير was sent the invite 15 days ago and never opened it."
+      },
+      {
+        "slug": "nour-and-ali",
+        "family": "The Fares Family",
+        "token": "TOKNOUR001",
+        "kind": "bad_phone",
+        "text": "The Fares Family: the phone number has no country code."
+      }
+    ]
+  }
+}

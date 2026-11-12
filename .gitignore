@@ -1,0 +1,9 @@
+node_modules
+.netlify
+.data
+backups
+*.log
+.env
+.DS_Store
+deno.lock
+.env.*

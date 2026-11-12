@@ -1,0 +1,27 @@
+{
+  "name": "wedding-guest-platform",
+  "private": true,
+  "type": "module",
+  "description": "Wedding Guest Platform: many wedding invitations, RSVPs and helper admin pages on one Netlify site.",
+  "scripts": {
+    "dev": "netlify dev --offline",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "migrate": "node --import tsx tools/migrate.ts",
+    "seed": "node --import tsx tools/seed.ts",
+    "qa": "node tools/qa/run-all.mjs",
+    "qa:scenarios": "node tools/qa/scenarios.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.15",
+    "@netlify/blobs": "^11.1.8",
+    "@netlify/database": "^2.0.3",
+    "@netlify/functions": "^6.1.1",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,365 @@
+{
+  "wedding": {
+    "slug": "dana-and-omar",
+    "groom": "Omar",
+    "bride": "Dana",
+    "event_at": "2027-05-08T16:30:00.000Z",
+    "event_date": "2027-05-08",
+    "event_time": "18:30",
+    "timezone": "Asia/Beirut",
+    "reply_by": "2027-05-15",
+    "status": "live",
+    "notes": "",
+    "published_at": "2026-11-03T10:00:00.000Z"
+  },
+  "password": "wedding",
+  "settings": {
+    "wa_message_a": "Dear {name},\n\nOmar & Dana invite you to celebrate their wedding.\n\n{link}",
+    "wa_message_b": "Dear {name},\n\nOmar & Dana invite you to their wedding.\n\n{link}",
+    "wa_reminder_a": "Dear {name}, a gentle reminder to answer.\n{link}",
+    "wa_reminder_b": "Dear {name}, a gentle reminder to answer.\n{link}",
+    "meta": {}
+  },
+  "invite": {
+    "draft": {
+      "version": 1,
+      "mode": "slides",
+      "config": {
+        "couple": {
+          "groom": "Omar",
+          "bride": "Dana",
+          "monogram": "O & D",
+          "ar": "عمر و دانا"
+        },
+        "date": {
+          "iso": "2027-05-08T19:00:00+03:00",
+          "en": "Saturday 8 May 2027",
+          "ar": "السبت ١٩ حزيران ٢٠٢٧",
+          "short": "19 · 6 · 2027",
+          "timeEn": "7:00 PM",
+          "timeAr": "٦:٣٠ مساءً"
+        },
+        "families": {
+          "en": {
+            "father1": "Eng. Samir Mansour",
+            "father2": "Mr. Fadi Nassar"
+          },
+          "ar": {
+            "father1": "المهندس سمير منصور",
+            "father2": "السيد فادي نصار"
+          }
+        },
+        "venue": {
+          "name": "Olive Grove Hall",
+          "city": "Batroun, Lebanon",
+          "ar": "البترون، لبنان",
+          "mapsQuery": "Olive Grove Hall Batroun Lebanon"
+        },
+        "rsvp": {
+          "replyByEn": "Please reply before May 15",
+          "replyByAr": "الرجاء التأكيد قبل ١٥ أيار",
+          "kidsNoteAr": "نومًا هنيئًا لأطفالكم، وسهرة سعيدة لكم",
+          "kidsNoteEn": "Sweet dreams to your little ones, and a lovely evening to you."
+        },
+        "gift": {
+          "provider": "Sample Pay",
+          "accountNumber": "12 345 678"
+        },
+        "music": {
+          "src": "music.m4a",
+          "startAt": 0,
+          "loop": true,
+          "volume": 0.6,
+          "enabled": true
+        }
+      },
+      "show": {
+        "kidsNote": true,
+        "gift": true,
+        "bismillah": true
+      },
+      "theme": {
+        "paper": "#f3ece2",
+        "paper2": "#ece3d5",
+        "gold": "#b8975a",
+        "goldD": "#8b6a34",
+        "goldL": "#e2cd9d",
+        "ink": "#4a3f2f",
+        "inkSoft": "#6f6250",
+        "serif": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+        "sans": "\"Jost\", \"Helvetica Neue\", Arial, sans-serif",
+        "arabic": "\"Amiri\", \"Noto Naskh Arabic\", \"Geeza Pro\", serif",
+        "baseSize": 16
+      },
+      "assets": {
+        "envelope": null,
+        "envelopeOpen": null,
+        "seal": null,
+        "couple": null,
+        "og": null,
+        "music": null
+      },
+      "slides": [
+        {
+          "id": "s1",
+          "name": "envelope.jpg",
+          "kind": "image",
+          "asset": "slides/envelope-ab12.jpg",
+          "type": "envelope",
+          "w": 1320,
+          "h": 1855,
+          "open_asset": "slides/envelope-open-cd34.jpg",
+          "overlays": [
+            {
+              "kind": "seal",
+              "x": 19.7,
+              "y": 38.3,
+              "w": 31.8,
+              "h": 21.6
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "name": "names.jpg",
+          "kind": "image",
+          "asset": "slides/couple-ef56.jpg",
+          "type": "plain",
+          "overlays": [
+            {
+              "kind": "names",
+              "x": 5,
+              "y": 10,
+              "w": 90,
+              "h": 22
+            },
+            {
+              "kind": "text",
+              "x": 5,
+              "y": 34,
+              "w": 90,
+              "h": 10,
+              "text": "{date}\n{time}",
+              "size": 5
+            },
+            {
+              "kind": "countdown",
+              "x": 6,
+              "y": 50,
+              "w": 88,
+              "h": 13
+            },
+            {
+              "kind": "maps",
+              "x": 22,
+              "y": 70,
+              "w": 56,
+              "h": 8
+            },
+            {
+              "kind": "gift",
+              "x": 12,
+              "y": 82,
+              "w": 76,
+              "h": 13
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "name": "rsvp.jpg",
+          "kind": "image",
+          "asset": "slides/envelope-open-cd34.jpg",
+          "type": "rsvp",
+          "w": 1320,
+          "h": 1855,
+          "overlays": [
+            {
+              "kind": "rsvp",
+              "x": 6,
+              "y": 6,
+              "w": 88,
+              "h": 90
+            }
+          ]
+        }
+      ]
+    },
+    "live": {
+      "version": 1,
+      "mode": "slides",
+      "config": {
+        "couple": {
+          "groom": "Omar",
+          "bride": "Dana",
+          "monogram": "O & D",
+          "ar": "عمر و دانا"
+        },
+        "date": {
+          "iso": "2027-05-08T19:00:00+03:00",
+          "en": "Saturday 8 May 2027",
+          "ar": "السبت ١٩ حزيران ٢٠٢٧",
+          "short": "19 · 6 · 2027",
+          "timeEn": "7:00 PM",
+          "timeAr": "٦:٣٠ مساءً"
+        },
+        "families": {
+          "en": {
+            "father1": "Eng. Samir Mansour",
+            "father2": "Mr. Fadi Nassar"
+          },
+          "ar": {
+            "father1": "المهندس سمير منصور",
+            "father2": "السيد فادي نصار"
+          }
+        },
+        "venue": {
+          "name": "Olive Grove Hall",
+          "city": "Batroun, Lebanon",
+          "ar": "البترون، لبنان",
+          "mapsQuery": "Olive Grove Hall Batroun Lebanon"
+        },
+        "rsvp": {
+          "replyByEn": "Please reply before May 15",
+          "replyByAr": "الرجاء التأكيد قبل ١٥ أيار",
+          "kidsNoteAr": "نومًا هنيئًا لأطفالكم، وسهرة سعيدة لكم",
+          "kidsNoteEn": "Sweet dreams to your little ones, and a lovely evening to you."
+        },
+        "gift": {
+          "provider": "Sample Pay",
+          "accountNumber": "12 345 678"
+        },
+        "music": {
+          "src": "music.m4a",
+          "startAt": 0,
+          "loop": true,
+          "volume": 0.6,
+          "enabled": true
+        }
+      },
+      "show": {
+        "kidsNote": true,
+        "gift": true,
+        "bismillah": true
+      },
+      "theme": {
+        "paper": "#f3ece2",
+        "paper2": "#ece3d5",
+        "gold": "#b8975a",
+        "goldD": "#8b6a34",
+        "goldL": "#e2cd9d",
+        "ink": "#4a3f2f",
+        "inkSoft": "#6f6250",
+        "serif": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+        "sans": "\"Jost\", \"Helvetica Neue\", Arial, sans-serif",
+        "arabic": "\"Amiri\", \"Noto Naskh Arabic\", \"Geeza Pro\", serif",
+        "baseSize": 16
+      },
+      "assets": {
+        "envelope": null,
+        "envelopeOpen": null,
+        "seal": null,
+        "couple": null,
+        "og": null,
+        "music": null
+      },
+      "slides": [
+        {
+          "id": "s1",
+          "name": "envelope.jpg",
+          "kind": "image",
+          "asset": "slides/envelope-ab12.jpg",
+          "type": "envelope",
+          "w": 1320,
+          "h": 1855,
+          "open_asset": "slides/envelope-open-cd34.jpg",
+          "overlays": [
+            {
+              "kind": "seal",
+              "x": 19.7,
+              "y": 38.3,
+              "w": 31.8,
+              "h": 21.6
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "name": "names.jpg",
+          "kind": "image",
+          "asset": "slides/couple-ef56.jpg",
+          "type": "plain",
+          "overlays": [
+            {
+              "kind": "names",
+              "x": 5,
+              "y": 10,
+              "w": 90,
+              "h": 22
+            },
+            {
+              "kind": "text",
+              "x": 5,
+              "y": 34,
+              "w": 90,
+              "h": 10,
+              "text": "{date}\n{time}",
+              "size": 5
+            },
+            {
+              "kind": "countdown",
+              "x": 6,
+              "y": 50,
+              "w": 88,
+              "h": 13
+            },
+            {
+              "kind": "maps",
+              "x": 22,
+              "y": 70,
+              "w": 56,
+              "h": 8
+            },
+            {
+              "kind": "gift",
+              "x": 12,
+              "y": 82,
+              "w": 76,
+              "h": 13
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "name": "rsvp.jpg",
+          "kind": "image",
+          "asset": "slides/envelope-open-cd34.jpg",
+          "type": "rsvp",
+          "w": 1320,
+          "h": 1855,
+          "overlays": [
+            {
+              "kind": "rsvp",
+              "x": 6,
+              "y": 6,
+              "w": 88,
+              "h": 90
+            }
+          ]
+        }
+      ]
+    },
+    "draft_updated_at": "2026-11-03T10:00:00.000Z",
+    "draft_updated_by": "Owner",
+    "published_at": "2026-11-03T10:00:00.000Z",
+    "published_by": "Owner"
+  },
+  "families": [],
+  "activity": [],
+  "helpers": [],
+  "files": {
+    "slides/envelope-ab12.jpg": "app/envelope.jpg",
+    "slides/envelope-open-cd34.jpg": "app/envelope-open.jpg",
+    "slides/couple-ef56.jpg": "app/couple.jpg"
+  }
+}

@@ -1,0 +1,336 @@
+{
+  "wedding": {
+    "slug": "karim-and-maya",
+    "groom": "Karim",
+    "bride": "Maya",
+    "event_at": "2027-06-19T15:30:00.000Z",
+    "event_date": "2027-06-19",
+    "event_time": "18:30",
+    "timezone": "Asia/Beirut",
+    "reply_by": "2027-05-15",
+    "status": "live",
+    "notes": "",
+    "published_at": "2026-11-01T10:00:00.000Z"
+  },
+  "password": "wedding",
+  "settings": {
+    "wa_message_a": "Dear {name},\n\nKarim & Maya invite you to celebrate their wedding.\n\n{link}",
+    "wa_message_b": "Dear {name},\n\nKarim & Maya invite you to their wedding.\n\n{link}",
+    "wa_reminder_a": "Dear {name}, a gentle reminder to answer.\n{link}",
+    "wa_reminder_b": "Dear {name}, a gentle reminder to answer.\n{link}",
+    "meta": {}
+  },
+  "invite": {
+    "draft": {
+      "version": 1,
+      "mode": "template",
+      "config": {
+        "couple": {
+          "groom": "Karim",
+          "bride": "Maya",
+          "monogram": "K & M",
+          "ar": "كريم و مايا"
+        },
+        "date": {
+          "iso": "2027-06-19T18:30:00+03:00",
+          "en": "Saturday 19 June 2027",
+          "ar": "السبت ١٩ حزيران ٢٠٢٧",
+          "short": "19 · 6 · 2027",
+          "timeEn": "6:30 PM",
+          "timeAr": "٦:٣٠ مساءً"
+        },
+        "families": {
+          "en": {
+            "father1": "Eng. Samir Mansour",
+            "father2": "Mr. Fadi Nassar"
+          },
+          "ar": {
+            "father1": "المهندس سمير منصور",
+            "father2": "السيد فادي نصار"
+          }
+        },
+        "venue": {
+          "name": "Olive Grove Hall",
+          "city": "Batroun, Lebanon",
+          "ar": "البترون، لبنان",
+          "mapsQuery": "Olive Grove Hall Batroun Lebanon"
+        },
+        "rsvp": {
+          "replyByEn": "Please reply before May 15",
+          "replyByAr": "الرجاء التأكيد قبل ١٥ أيار",
+          "kidsNoteAr": "نومًا هنيئًا لأطفالكم، وسهرة سعيدة لكم",
+          "kidsNoteEn": "Sweet dreams to your little ones, and a lovely evening to you."
+        },
+        "gift": {
+          "provider": "Sample Pay",
+          "accountNumber": "12 345 678"
+        },
+        "music": {
+          "src": "music.m4a",
+          "startAt": 0,
+          "loop": true,
+          "volume": 0.6,
+          "enabled": true
+        }
+      },
+      "show": {
+        "kidsNote": true,
+        "gift": true,
+        "bismillah": true
+      },
+      "theme": {
+        "paper": "#f3ece2",
+        "paper2": "#ece3d5",
+        "gold": "#b8975a",
+        "goldD": "#8b6a34",
+        "goldL": "#e2cd9d",
+        "ink": "#4a3f2f",
+        "inkSoft": "#6f6250",
+        "serif": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+        "sans": "\"Jost\", \"Helvetica Neue\", Arial, sans-serif",
+        "arabic": "\"Amiri\", \"Noto Naskh Arabic\", \"Geeza Pro\", serif",
+        "baseSize": 16
+      },
+      "assets": {
+        "envelope": null,
+        "envelopeOpen": null,
+        "seal": null,
+        "couple": null,
+        "og": null,
+        "music": null
+      },
+      "slides": []
+    },
+    "live": {
+      "version": 1,
+      "mode": "template",
+      "config": {
+        "couple": {
+          "groom": "Karim",
+          "bride": "Maya",
+          "monogram": "K & M",
+          "ar": "كريم و مايا"
+        },
+        "date": {
+          "iso": "2027-06-19T18:30:00+03:00",
+          "en": "Saturday 19 June 2027",
+          "ar": "السبت ١٩ حزيران ٢٠٢٧",
+          "short": "19 · 6 · 2027",
+          "timeEn": "6:30 PM",
+          "timeAr": "٦:٣٠ مساءً"
+        },
+        "families": {
+          "en": {
+            "father1": "Eng. Samir Mansour",
+            "father2": "Mr. Fadi Nassar"
+          },
+          "ar": {
+            "father1": "المهندس سمير منصور",
+            "father2": "السيد فادي نصار"
+          }
+        },
+        "venue": {
+          "name": "Olive Grove Hall",
+          "city": "Batroun, Lebanon",
+          "ar": "البترون، لبنان",
+          "mapsQuery": "Olive Grove Hall Batroun Lebanon"
+        },
+        "rsvp": {
+          "replyByEn": "Please reply before May 15",
+          "replyByAr": "الرجاء التأكيد قبل ١٥ أيار",
+          "kidsNoteAr": "نومًا هنيئًا لأطفالكم، وسهرة سعيدة لكم",
+          "kidsNoteEn": "Sweet dreams to your little ones, and a lovely evening to you."
+        },
+        "gift": {
+          "provider": "Sample Pay",
+          "accountNumber": "12 345 678"
+        },
+        "music": {
+          "src": "music.m4a",
+          "startAt": 0,
+          "loop": true,
+          "volume": 0.6,
+          "enabled": true
+        }
+      },
+      "show": {
+        "kidsNote": true,
+        "gift": true,
+        "bismillah": true
+      },
+      "theme": {
+        "paper": "#f3ece2",
+        "paper2": "#ece3d5",
+        "gold": "#b8975a",
+        "goldD": "#8b6a34",
+        "goldL": "#e2cd9d",
+        "ink": "#4a3f2f",
+        "inkSoft": "#6f6250",
+        "serif": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+        "sans": "\"Jost\", \"Helvetica Neue\", Arial, sans-serif",
+        "arabic": "\"Amiri\", \"Noto Naskh Arabic\", \"Geeza Pro\", serif",
+        "baseSize": 16
+      },
+      "assets": {
+        "envelope": null,
+        "envelopeOpen": null,
+        "seal": null,
+        "couple": null,
+        "og": null,
+        "music": null
+      },
+      "slides": []
+    },
+    "draft_updated_at": "2026-11-01T10:00:00.000Z",
+    "draft_updated_by": "Owner",
+    "published_at": "2026-11-01T10:00:00.000Z",
+    "published_by": "Owner"
+  },
+  "families": [
+    {
+      "token": "TOKSALEM1",
+      "name": "The Salem Family",
+      "side": "a",
+      "max_guests": 4,
+      "message": null,
+      "phone": null,
+      "email": "salem@example.com",
+      "created_at": "2026-11-05T18:00:00.000Z",
+      "created_by": "Rima",
+      "updated_at": "2026-11-05T18:00:00.000Z",
+      "updated_by": "Rima",
+      "sent": {
+        "invite_at": "2026-11-03T18:02:00.000Z",
+        "invite_by": "Rima",
+        "invite_channel": "copy"
+      },
+      "sends": [
+        {
+          "kind": "invite",
+          "channel": "copy",
+          "by": "Rima",
+          "at": "2026-11-03T18:02:00.000Z"
+        }
+      ],
+      "opened": {
+        "first_at": "2026-11-03T19:00:00.000Z",
+        "last_at": "2026-11-04T19:00:00.000Z",
+        "count": 5
+      },
+      "response": {
+        "attending": true,
+        "guests": 3,
+        "guest_names": [
+          "Rania Salem",
+          "Fadi Salem",
+          "Lina Salem"
+        ],
+        "note": "Mabrouk!",
+        "at": "2026-11-04T21:14:00.000Z"
+      }
+    },
+    {
+      "token": "TOKABOUKH2",
+      "name": "عائلة أبو سمير",
+      "side": "b",
+      "max_guests": 2,
+      "message": null,
+      "phone": null,
+      "email": null,
+      "created_at": "2026-11-05T18:00:00.000Z",
+      "created_by": "Karim",
+      "updated_at": "2026-11-05T18:00:00.000Z",
+      "updated_by": "Karim",
+      "sent": {
+        "invite_at": "2026-11-04T09:00:00.000Z",
+        "invite_by": "Karim",
+        "invite_channel": "copy"
+      },
+      "sends": [
+        {
+          "kind": "invite",
+          "channel": "copy",
+          "by": "Karim",
+          "at": "2026-11-04T09:00:00.000Z"
+        }
+      ],
+      "opened": {
+        "first_at": "2026-11-04T10:40:00.000Z",
+        "last_at": "2026-11-04T10:40:00.000Z",
+        "count": 2
+      },
+      "response": null
+    },
+    {
+      "token": "TOKKARAM3",
+      "name": "The Karam Family",
+      "side": "b",
+      "max_guests": 5,
+      "message": null,
+      "phone": "+96170000002",
+      "email": null,
+      "created_at": "2026-11-05T18:00:00.000Z",
+      "created_by": "Rima",
+      "updated_at": "2026-11-05T18:00:00.000Z",
+      "updated_by": "Rima",
+      "sent": null,
+      "sends": [],
+      "opened": null,
+      "response": null
+    }
+  ],
+  "activity": [
+    {
+      "key": "000000000003",
+      "at": "2026-11-04T21:14:00.000Z",
+      "by": "Guest",
+      "action": "answered",
+      "token": "TOKSALEM1",
+      "family_name": "The Salem Family",
+      "side": "a",
+      "details": {
+        "attending": true,
+        "guests": 3,
+        "guest_names": [
+          "Rania Salem",
+          "Fadi Salem",
+          "Lina Salem"
+        ]
+      }
+    },
+    {
+      "key": "000000000002",
+      "at": "2026-11-04T09:00:00.000Z",
+      "by": "Karim",
+      "action": "invite_sent",
+      "token": "TOKABOUKH2",
+      "family_name": "عائلة أبو سمير",
+      "side": "b",
+      "details": {
+        "kind": "invite",
+        "channel": "copy"
+      }
+    },
+    {
+      "key": "000000000001",
+      "at": "2026-11-01T10:00:00.000Z",
+      "by": "Owner",
+      "action": "invite_published",
+      "token": null,
+      "family_name": null,
+      "side": null,
+      "details": {}
+    }
+  ],
+  "helpers": [
+    {
+      "name": "Rima",
+      "first_seen": "2026-11-01T10:00:00.000Z",
+      "last_active": "2026-11-05T10:00:00.000Z",
+      "invites": 7,
+      "reminders": 2,
+      "edits": 3,
+      "logins": 2
+    }
+  ]
+}

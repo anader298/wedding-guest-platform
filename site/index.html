@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wedding Guest Platform</title>
+<meta name="description" content="Wedding invitations with guest-list management: one private link per family, replies and seat counts, and a named action on every row.">
+<!--
+  site/index.html: the public front page at "/". A plain placeholder in this repository; each deployment
+  replaces it with its own landing page. Pages that matter: /<wedding>/ (invite), /<wedding>/admin/ (helpers),
+  /manage/ (owner). Nothing here calls the API.
+-->
+<style>
+  :root { --paper: #f3ece2; --ink: #4a3f2f; --gold: #8b6a34; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.55 "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 56px 22px 40px; }
+  h1 { font: 500 34px/1.15 Georgia, serif; margin: 0 0 10px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 22px; }
+  a { color: var(--gold); }
+  .links a { display: inline-block; margin: 0 14px 10px 0; padding: 10px 16px; border: 1px solid var(--gold); border-radius: 999px; text-decoration: none; }
+  footer { margin-top: 36px; font-size: 14px; opacity: .75; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Wedding Guest Platform</h1>
+  <p>Wedding invitations with the guest list behind them.</p>
+  <ul>
+    <li>One private link per family, with that family's name and seats on the card.</li>
+    <li>Helpers send from their own WhatsApp; every action carries their name.</li>
+    <li>Sent, opened, answered and coming, per family, with Excel in and out.</li>
+  </ul>
+  <p class="links">
+    <a href="https://dandoungroup.com/testweddingsite/">Live demo</a>
+    <a href="/karim-and-maya/?demo=1">Sample invitation</a>
+    <a href="/karim-and-maya/admin/">Wedding admin</a>
+    <a href="/manage/">Owner login</a>
+  </p>
+  <footer>Sample data only. Every couple, family and helper name in this project is invented.</footer>
+</main>
+</body>
+</html>

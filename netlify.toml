@@ -1,0 +1,116 @@
+# Wedding Guest Platform: one Netlify site for many weddings.
+# What this file does: tells Netlify where the pages are (site/), how to bundle the functions,
+# which address shows which page (redirects), and which safety headers to send.
+# What NOT to change: the ORDER of the [[redirects]] blocks, and never add a rule that only adds or removes a final slash.
+#   The ORDER matters: Netlify uses the first rule that matches,
+# so /manage/ and /<wedding>/admin/ must come before the catch-all /<wedding>/... rules.
+# Function addresses (/<wedding>/api/..., /<wedding>/asset/..., /api/manage/...) are declared inside each
+# function file and always win over these redirects.
+# The Edge Function netlify/edge-functions/invite-meta.ts (link previews for WhatsApp) declares its own addresses
+# (/<wedding> and /<wedding>/) in its config, so no [[edge_functions]] block is needed here (netlify dev loads it too).
+#notes: see docs/API.md for every function address.
+# Netlify Database: provisioned because @netlify/database is in package.json. Our own migrate()
+# (netlify/functions/_lib/_db.ts) applies migrations/*.sql. Keep netlify/database/migrations/ EMPTY or Netlify
+# would also try to run migrations from there.
+
+[build]
+  publish = "site"
+  command = "echo no build step"
+
+[functions]
+  node_bundler = "esbuild"
+  directory = "netlify/functions"
+  # the database migrations are read from disk on cold start, so ship them with every function
+  included_files = ["migrations/**"]
+  # pglite is only used on a laptop; keep it out of the bundles
+  external_node_modules = ["@electric-sql/pglite"]
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/manage/*"
+  to = "/manage/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/:slug/admin/*"
+  to = "/app/admin.html"
+  status = 200
+
+# NO redirect from /<wedding> to /<wedding>/ : Netlify matches redirect rules with AND without the final slash
+# (docs.netlify.com/manage/routing/redirects/redirect-options, "Trailing slash"), so such a 301 sends
+# /<wedding>/ to itself forever ("too many redirects" on EVERY invite). tests/netlify-toml.test.ts guards this.
+# Instead, if someone opens /<wedding> without the slash, the page still loads (rule below), and its relative
+# files (style.css, app.js, pictures, music) are asked for at the site root: these rewrites serve them from app/.
+# Keep this list equal to the template's own files in site/app/ (the test checks it).
+[[redirects]]
+  from = "/app.js"
+  to = "/app/app.js"
+  status = 200
+
+[[redirects]]
+  from = "/style.css"
+  to = "/app/style.css"
+  status = 200
+
+[[redirects]]
+  from = "/slides.js"
+  to = "/app/slides.js"
+  status = 200
+
+[[redirects]]
+  from = "/envelope.jpg"
+  to = "/app/envelope.jpg"
+  status = 200
+
+[[redirects]]
+  from = "/envelope-open.jpg"
+  to = "/app/envelope-open.jpg"
+  status = 200
+
+[[redirects]]
+  from = "/envelope-seal.webp"
+  to = "/app/envelope-seal.webp"
+  status = 200
+
+[[redirects]]
+  from = "/couple.jpg"
+  to = "/app/couple.jpg"
+  status = 200
+
+[[redirects]]
+  from = "/og-envelope.jpg"
+  to = "/app/og-envelope.jpg"
+  status = 200
+
+[[redirects]]
+  from = "/music.m4a"
+  to = "/app/music.m4a"
+  status = 200
+
+[[redirects]]
+  from = "/guest-list-template.xlsx"
+  to = "/app/guest-list-template.xlsx"
+  status = 200
+
+[[redirects]]
+  from = "/:slug/*"
+  to = "/app/:splat"
+  status = 200
+
+[[headers]]
+  for = "/:slug/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "private, max-age=0, no-store"
+
+[[headers]]
+  for = "/manage/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "private, max-age=0, no-store"
