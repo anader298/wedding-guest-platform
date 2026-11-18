@@ -1,5 +1,7 @@
 # Wedding Guest Platform
 
+[![tests](https://github.com/anader298/wedding-guest-platform/actions/workflows/test.yml/badge.svg)](https://github.com/anader298/wedding-guest-platform/actions/workflows/test.yml)
+
 Wedding invitations with the guest list behind them: one private link per family, replies and seat counts, and a helper's name on every action. Many weddings on one small site.
 
 **Live demo:** [dandoungroup.com/testweddingsite](https://dandoungroup.com/testweddingsite/). The product's live page, with a sample invitation you can open on your phone. No install needed.
@@ -87,7 +89,7 @@ The full API is in [`docs/API.md`](docs/API.md); backup retention and the GitHub
 - Netlify Blobs for uploads and backup files
 - Plain HTML, CSS and JavaScript for the three pages; SheetJS (from its CDN) for Excel in and out
 - `node:test` with `tsx` for 88 server tests; Playwright for page and journey checks on WebKit (iPhone) and Chromium (Android)
-- A GitHub Actions workflow that runs `npm test` (in `docs/ci/`; copy it to `.github/workflows/` to turn it on)
+- A GitHub Actions workflow that runs `npm test` on every push (`.github/workflows/test.yml`)
 
 ## Results
 
@@ -157,7 +159,7 @@ Use: Automate. Lever: time and risk. Several relatives send invitations from the
 
 - **Playbook or agent, and why.** Neither: plain code. Four relatives need the same behaviour every time, and no step needs a model.
 - **How it was built.** AI coding agents, two days from the product's first commit to a reviewed build. Tests run on PGlite, so they exercise the production SQL migrations.
-- **How it's checked.** 88 server tests passing on 18 Nov (`npm test`); Playwright on WebKit and Chromium passed 44 of 44 at publication. CI is written (`docs/ci/test.yml`) but not on.
+- **How it's checked.** 88 server tests passing on 18 Nov (`npm test`); Playwright on WebKit and Chromium passed 44 of 44 at publication. GitHub Actions runs `npm test` on every push.
 - **Limits.** Copy records intent, not delivery; one guest on three devices counts as three opens; `site/app/admin.html` is 2,569 lines. See [Limits](#limits-what-a-copy-button-cannot-know).
 
 How I build with AI: [github.com/anader298/how-i-build-with-ai](https://github.com/anader298/how-i-build-with-ai)
