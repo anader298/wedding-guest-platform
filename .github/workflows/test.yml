@@ -1,7 +1,7 @@
 # Runs the automatic tests on every pull request and on every change to main.
 # A green tick on the pull request means the tests passed. A red cross means: do not merge.
 # This file does NOT deploy anything. Netlify deploys by itself when main changes (its Git integration).
-#notes: (developers) Node 22 matches Netlify. `npm ci` needs package-lock.json committed. Playwright page tests
+#notes: (developers) Node 24: its npm reads the committed lockfile; Node 22's older npm rejects it. `npm ci` needs package-lock.json committed. Playwright page tests
 #   (tools/qa/) are NOT run here (they need browsers); run them locally before merging a page change.
 name: test
 on:
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm test
