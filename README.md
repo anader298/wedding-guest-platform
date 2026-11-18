@@ -141,3 +141,23 @@ Built by Anthony Nader (Dandoun Group): first for one family's wedding, then for
 ## Rights
 
 Copyright Anthony Nader. All rights reserved; shown for portfolio purposes. The product is live and operated by another business, so no open-source licence is granted. The Basmala calligraphy in `site/app/index.html` is by a Wikimedia Commons contributor under CC BY-SA 4.0 (credited in the file).
+
+## Methodology
+
+Use: Automate. Lever: time and risk. Several relatives send invitations from their own phones, and the owner page and Excel summary show who was sent one and who replied, so no guest is missed.
+
+| Step | Done by | Check |
+|---|---|---|
+| Write and test the code | AI coding agents, reviewed by a person | 88 server tests, Playwright checks |
+| Import families from Excel | Code (SheetJS) | Preview before saving |
+| Send an invitation | Person, from their own WhatsApp | Recorded with the helper's name |
+| Open and answer | Code | Per-family token; phone and e-mail never reach the public invite (tested) |
+| Edits and destructive actions | Code; a person confirms twice | A conflict instead of a silent overwrite; undo snapshots |
+| Back up | Code, nightly | Netlify Blobs; restore is the owner's action |
+
+- **Playbook or agent, and why.** Neither: plain code. Four relatives need the same behaviour every time, and no step needs a model.
+- **How it was built.** AI coding agents, two days from the product's first commit to a reviewed build. Tests run on PGlite, so they exercise the production SQL migrations.
+- **How it's checked.** 88 server tests passing on 18 Nov (`npm test`); Playwright on WebKit and Chromium passed 44 of 44 at publication. CI is written (`docs/ci/test.yml`) but not on.
+- **Limits.** Copy records intent, not delivery; one guest on three devices counts as three opens; `site/app/admin.html` is 2,569 lines. See [Limits](#limits-what-a-copy-button-cannot-know).
+
+How I build with AI: [github.com/anader298/how-i-build-with-ai](https://github.com/anader298/how-i-build-with-ai)
