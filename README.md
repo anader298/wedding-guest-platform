@@ -4,7 +4,7 @@ Wedding invitations with the guest list behind them: one private link per family
 
 **Live demo:** [dandoungroup.com/testweddingsite](https://dandoungroup.com/testweddingsite/). The product's live page, with a sample invitation you can open on your phone. No install needed.
 
-> **About this repo.** This is a public snapshot of a private application that runs real weddings and is updated continuously. This copy is fixed at the point it was published and runs on sample data only.
+> **About this repo.** This is a public snapshot of a private application that runs real weddings and is updated continuously. The private repository holds real guest data, so its history stays private; this copy was published as one commit on 11 November 2026, and every change since is its own commit. It runs on sample data only.
 
 | The invitation a family receives | Reserved for that family | The helpers' list | The dashboard |
 |---|---|---|---|
@@ -136,7 +136,7 @@ Ctrl+C stops it and deletes the copy. For the browser checks, see [`tools/qa/REA
 
 ## About
 
-Built by Anthony Nader as a side project: first for one family's wedding, then forked into a multi-wedding product that a small family business runs on its own accounts. Case study: https://dandoungroup.com/case-studies/#wedding-planners
+Built by Anthony Nader (Dandoun Group): first for one family's wedding, then forked into a multi-wedding product that a small family business runs on its own accounts. Case study: https://dandoungroup.com/case-studies/#wedding-planners
 
 ## Rights
 
