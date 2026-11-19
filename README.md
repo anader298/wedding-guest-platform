@@ -8,9 +8,16 @@ Wedding invitations with the guest list behind them: one private link per family
 
 > **About this repo.** This is a public snapshot of a private application that runs real weddings and is updated continuously. The private repository holds real guest data, so its history stays private; this copy was published as one commit on 11 November 2026, and every change since is its own commit. It runs on sample data only.
 
-| The invitation a family receives | Reserved for that family | The helpers' list | The dashboard |
-|---|---|---|---|
-| ![Closed envelope with the K & M seal](docs/invite-envelope.jpg) | ![RSVP page reserved for The Aziz Family, 4 seats](docs/invite-rsvp.jpg) | ![Send invites tab with sides, filters and family cards](docs/admin-send.jpg) | ![Dashboard tiles: 17 of 54 guests coming](docs/admin-dashboard.jpg) |
+**On a phone, left to right:** the invitation a family receives, the RSVP reserved for that family, the helpers' list, and the dashboard.
+
+<p align="center">
+<img src="docs/invite-envelope.jpg" width="200" alt="Closed envelope with the K & M seal">
+<img src="docs/invite-rsvp.jpg" width="200" alt="RSVP page reserved for The Aziz Family, 4 seats">
+<img src="docs/admin-send.jpg" width="200" alt="Send invites tab with sides, filters and family cards">
+<img src="docs/admin-dashboard.jpg" width="200" alt="Dashboard tiles: 17 of 54 guests coming">
+</p>
+
+**The owner page.** Every wedding with sent, opened, answered and coming counts.
 
 ![Owner page: every wedding with sent, opened, answered and coming counts](docs/manage.jpg)
 
